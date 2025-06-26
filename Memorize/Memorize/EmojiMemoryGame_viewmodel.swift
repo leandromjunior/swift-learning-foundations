@@ -8,5 +8,15 @@
 import SwiftUI
 
 class EmojiMemoryGame {
-    var model: MemoryGame_model<String>
+    private var model = MemorizeGame_model(numberOfPairsOfCards: 4, cardContentFactory: { (index: Int) -> String in
+        return ["⚽️", "🥅", "🏟️", "🏆", "😘", "❤️", "🎶", "🥶", "🧠", "🧤", "🥳", "🤝", "🎩"][index]
+    })
+    
+    var cards: Array<MemorizeGame_model<String>.Card> {
+        return model.cards
+    }
+    
+    func choose(_ card: MemorizeGame_model<String>.Card) {
+        model.choose(card)
+    }
 }
