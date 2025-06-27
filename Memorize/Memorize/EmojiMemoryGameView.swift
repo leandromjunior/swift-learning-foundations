@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  EmojiMemoryGameView.swift
 //  Memorize
 //
 //  Created by Leandro Motta Junior on 14/06/25.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct EmojiMemoryGameView: View {
     var viewModel: EmojiMemoryGame
     var emojis = ["⚽️", "🥅", "🏟️", "🏆", "😘", "❤️", "🎶", "🥶", "🧠", "🧤", "🥳", "🤝", "🎩"]
     
@@ -65,5 +65,5 @@ struct CardView: View {
 
 
 #Preview {
-    ContentView()
+    EmojiMemoryGameView()
 }
