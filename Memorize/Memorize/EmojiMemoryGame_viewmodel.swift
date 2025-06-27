@@ -8,9 +8,19 @@
 import SwiftUI
 
 class EmojiMemoryGame {
-    private var model = MemorizeGame_model(numberOfPairsOfCards: 4, cardContentFactory: { (index: Int) -> String in
-        return ["⚽️", "🥅", "🏟️", "🏆", "😘", "❤️", "🎶", "🥶", "🧠", "🧤", "🥳", "🤝", "🎩"][index]
-    })
+    private static let emojis = ["⚽️", "🥅", "🏟️", "🏆", "😘", "❤️", "🎶", "🥶", "🧠", "🧤", "🥳", "🤝", "🎩"]
+    
+    private static func createMemoryGame() -> MemorizeGame_model<String> {
+        return MemorizeGame_model(numberOfPairsOfCards: 4, cardContentFactory: { (pairIndex: Int) in
+            if emojis.indices.contains(pairIndex) {
+                return emojis[pairIndex]
+            } else {
+                return "😰"
+            }
+        })
+    }
+    
+    private var model = createMemoryGame()
     
     var cards: Array<MemorizeGame_model<String>.Card> {
         return model.cards
