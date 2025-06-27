@@ -14,7 +14,7 @@ struct MemorizeGame_model<CardContent> {
         cards = []
         // add numberOfPairsOfCards * 2
         
-        for pairIndex in 0..<numberOfPairsOfCards {
+        for pairIndex in 0..<max(2, numberOfPairsOfCards) {
             let content = cardContentFactory(pairIndex)
             cards.append(Card(content: content))
             cards.append(Card(content: content))
