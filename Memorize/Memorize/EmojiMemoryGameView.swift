@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct EmojiMemoryGameView: View {
-    var viewModel: EmojiMemoryGame
-    var emojis = ["⚽️", "🥅", "🏟️", "🏆", "😘", "❤️", "🎶", "🥶", "🧠", "🧤", "🥳", "🤝", "🎩"]
+    var viewModel: EmojiMemoryGame = EmojiMemoryGame()
     
     var body: some View {
         VStack {
@@ -22,8 +21,8 @@ struct EmojiMemoryGameView: View {
     var cards: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 90))]) {
-                ForEach(emojis.indices, id: \.self) { index in
-                    CardView(content: emojis[index])
+                ForEach(viewModel.cards.indices, id: \.self) { index in
+                    CardView(card: viewModel.cards[index])
                         .aspectRatio(2/3, contentMode: .fit)
                 }
             }
@@ -34,22 +33,18 @@ struct EmojiMemoryGameView: View {
 }
 
 struct CardView: View {
-    var content: String
-    @State var isFaceUp: Bool = true
+    let card: MemorizeGame_model<String>.Card
     
     var body: some View {
         ZStack {
             let shape = RoundedRectangle(cornerRadius: 20)
-            if isFaceUp{
+            if card.isFaceUp{
                 shape.fill().foregroundColor(.white)
                 shape.strokeBorder(lineWidth: 3)
-                Text(content).font(.largeTitle)
+                Text(card.content).font(.largeTitle)
             } else {
                 shape.fill()
             }
-        }
-        .onTapGesture {
-            isFaceUp = !isFaceUp
         }
     }
 }
