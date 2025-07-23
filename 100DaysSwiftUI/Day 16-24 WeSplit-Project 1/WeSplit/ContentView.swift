@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Day 16
+// Day 1
 struct ContentView: View {
     @State private var tapCount = 0 // The @state term "replaces" the mutating in some swiftUi cases
     @State private var name = ""
@@ -61,8 +61,63 @@ struct ContentView: View {
 
 // Day 17
 struct SecondView: View {
+    @State private var checkAmount = 0.0
+    @State private var numberOfPeople = 2
+    @State private var tipPercentage = 20
+    @FocusState private var amountIsFocused: Bool
+    
+    let tipPercentages = [10, 15, 20, 25, 0]
+    
+    var totalPerPerson: Double {
+        let peopleCount = Double(numberOfPeople + 2)
+        let tipSelection = Double(tipPercentage)
+        
+        let tipValue = checkAmount / 100 * tipSelection
+        let grandTotal = checkAmount + tipValue
+        let amountPerPerson = grandTotal / peopleCount
+        
+        return amountPerPerson
+    }
+    
     var body: some View {
-        /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Hello, world!@*/Text("Hello, world!")/*@END_MENU_TOKEN@*/
+        //Adding the Navigation Stacker, after clicking the picker, the app opens a new screen listing the options. Otherwise, it would show the options in a menu list
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .keyboardType(.decimalPad) // Number Keyboard
+                        .focused($amountIsFocused)
+                    
+                    Picker("Number of People", selection: $numberOfPeople) {
+                        ForEach(2..<100) { people in
+                            Text("\(people) people")
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                }
+                
+                Section("How much tip do you wnat to leave?") {
+                    Picker("Tip percentage", selection: $tipPercentage) {
+                        ForEach(tipPercentages, id: \.self) { tip in
+                            Text(tip, format: .percent)
+                        }
+                    }
+                    .pickerStyle(.segmented) //Changes the Picker layout
+                }
+                
+                Section {
+                    Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                }
+            }
+            .navigationTitle("WeSplit") // Add a title in the page and side by back button after clicking the Picker
+            .toolbar { // Insert the Button 'Done"when the TextField is on focus (Hiding the keyboard)
+                if amountIsFocused {
+                    Button("Done") {
+                        amountIsFocused = false
+                    }
+                }
+            }
+       }
     }
 }
 
