@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Day 1
+// Day 16
 struct ContentView: View {
     @State private var tapCount = 0 // The @state term "replaces" the mutating in some swiftUi cases
     @State private var name = ""
@@ -80,7 +80,6 @@ struct SecondView: View {
     }
     
     var body: some View {
-        //Adding the Navigation Stacker, after clicking the picker, the app opens a new screen listing the options. Otherwise, it would show the options in a menu list
         NavigationStack {
             Form {
                 Section {
@@ -93,7 +92,7 @@ struct SecondView: View {
                             Text("\(people) people")
                         }
                     }
-                    .pickerStyle(.navigationLink)
+                    .pickerStyle(.navigationLink) //Adding the Navigation Stacker plus this pickerStyle, after clicking the picker, the app opens a new screen listing the options. Otherwise, it would show the options in a menu list.
                 }
                 
                 Section("How much tip do you wnat to leave?") {
@@ -121,7 +120,84 @@ struct SecondView: View {
     }
 }
 
+// Day 18 - Mini Challenge
+
+/*
+ 1 - Add a header to the third section, saying "Amount per person"
+ 2 - Add another section showing the total amount for the check - i.e., the original amount plus tip value, without dividing by the number of people.
+ 3 - Change the tip percentage picker to show a new screen rather than using a segmented control, and give it a wider range of options - everything from 0% to 100%. Tip: use the range 0..<101 for your range rather than a fixed array.
+ */
+struct ChallengeView: View {
+    @State private var checkAmount = 0.0
+    @State private var numberOfPeople = 2
+    @State private var tipPercentage = 20
+    @FocusState private var amountIsFocused: Bool
+    
+    var totalPerPerson: Double {
+        let peopleCount = Double(numberOfPeople + 2)
+        let tipSelection = Double(tipPercentage)
+        
+        let tipValue = checkAmount / 100 * tipSelection
+        let grandTotal = checkAmount + tipValue
+        let amountPerPerson = grandTotal / peopleCount
+        
+        return amountPerPerson
+    }
+    
+    var totalAmount: Double {
+        let tipSelection = Double(tipPercentage)
+        
+        let tipValue = checkAmount / 100 * tipSelection
+        let grandTotal = checkAmount + tipValue
+        
+        return grandTotal
+    }
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Amount", value: $checkAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .keyboardType(.decimalPad) // Number Keyboard
+                        .focused($amountIsFocused)
+                    
+                    Picker("Number of People", selection: $numberOfPeople) {
+                        ForEach(2..<100) { people in
+                            Text("\(people) people")
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                }
+                
+                Section("How much tip do you wnat to leave?") {
+                    Picker("Tip percentage", selection: $tipPercentage) {
+                        ForEach(0..<101) { tip in
+                            Text(tip, format: .percent)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                }
+
+                Section("Amount per person") {
+                    Text(totalPerPerson, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                }
+                
+                Section ("Total Amount") {
+                    Text(totalAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                }
+            }
+            .navigationTitle("WeSplit") // Add a title in the page and side by back button after clicking the Picker
+            .toolbar { // Insert the Button 'Done"when the TextField is on focus (Hiding the keyboard)
+                if amountIsFocused {
+                    Button("Done") {
+                        amountIsFocused = false
+                    }
+                }
+            }
+       }
+    }
+}
+
 #Preview {
     //ContentView()
-    SecondView()
+    ChallengeView()
 }
