@@ -36,28 +36,31 @@ struct ContentView: View {
     }
     
     var body: some View {
-        Form {
-            Section ("Select the units you want to convert") {
-                Picker("From", selection: $selectedUnitFrom) {
-                    ForEach(units, id: \.self) { unitFrom in
-                        Text(unitFrom)
+        NavigationStack {
+            Form {
+                Section ("Select the units you want to convert") {
+                    Picker("From", selection: $selectedUnitFrom) {
+                        ForEach(units, id: \.self) { unitFrom in
+                            Text(unitFrom)
+                        }
+                    }
+                    
+                    Picker("To", selection: $selectedUnitTo) {
+                        ForEach(units, id: \.self) { unitTo in
+                            Text(unitTo)
+                        }
                     }
                 }
                 
-                Picker("To", selection: $selectedUnitTo) {
-                    ForEach(units, id: \.self) { unitTo in
-                        Text(unitTo)
-                    }
+                Section ("Temperature") {
+                    TextField("Type the temerature you want to convert", value: $inputNumber, format: .number)
+                }
+                
+                Section ("Temperature in \(selectedUnitTo)") {
+                    Text(convertedValue, format: .number)
                 }
             }
-            
-            Section ("Temperature") {
-                TextField("Type the temerature you want to convert", value: $inputNumber, format: .number)
-            }
-            
-            Section ("Temperature in \(selectedUnitTo)") {
-                Text(convertedValue, format: .number)
-            }
+            .navigationTitle("Temperature Converter")
         }
     }
 }
