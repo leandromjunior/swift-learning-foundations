@@ -7,19 +7,19 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		F2B371A02E3084190042BFC4 /* WeSplit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeSplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2920B832E340F2700DE029B /* Converter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Converter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F2B371A22E3084190042BFC4 /* WeSplit */ = {
+		F2920B852E340F2700DE029B /* Converter */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WeSplit;
+			path = Converter;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		F2B3719D2E3084190042BFC4 /* Frameworks */ = {
+		F2920B802E340F2700DE029B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -29,18 +29,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F2B371972E3084190042BFC4 = {
+		F2920B7A2E340F2700DE029B = {
 			isa = PBXGroup;
 			children = (
-				F2B371A22E3084190042BFC4 /* WeSplit */,
-				F2B371A12E3084190042BFC4 /* Products */,
+				F2920B852E340F2700DE029B /* Converter */,
+				F2920B842E340F2700DE029B /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		F2B371A12E3084190042BFC4 /* Products */ = {
+		F2920B842E340F2700DE029B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F2B371A02E3084190042BFC4 /* WeSplit.app */,
+				F2920B832E340F2700DE029B /* Converter.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,64 +48,64 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F2B3719F2E3084190042BFC4 /* WeSplit */ = {
+		F2920B822E340F2700DE029B /* Converter */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F2B371AE2E30841B0042BFC4 /* Build configuration list for PBXNativeTarget "WeSplit" */;
+			buildConfigurationList = F2920B912E340F2800DE029B /* Build configuration list for PBXNativeTarget "Converter" */;
 			buildPhases = (
-				F2B3719C2E3084190042BFC4 /* Sources */,
-				F2B3719D2E3084190042BFC4 /* Frameworks */,
-				F2B3719E2E3084190042BFC4 /* Resources */,
+				F2920B7F2E340F2700DE029B /* Sources */,
+				F2920B802E340F2700DE029B /* Frameworks */,
+				F2920B812E340F2700DE029B /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F2B371A22E3084190042BFC4 /* WeSplit */,
+				F2920B852E340F2700DE029B /* Converter */,
 			);
-			name = WeSplit;
+			name = Converter;
 			packageProductDependencies = (
 			);
-			productName = WeSplit;
-			productReference = F2B371A02E3084190042BFC4 /* WeSplit.app */;
+			productName = Converter;
+			productReference = F2920B832E340F2700DE029B /* Converter.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		F2B371982E3084190042BFC4 /* Project object */ = {
+		F2920B7B2E340F2700DE029B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
-					F2B3719F2E3084190042BFC4 = {
+					F2920B822E340F2700DE029B = {
 						CreatedOnToolsVersion = 16.1;
 					};
 				};
 			};
-			buildConfigurationList = F2B3719B2E3084190042BFC4 /* Build configuration list for PBXProject "WeSplit" */;
+			buildConfigurationList = F2920B7E2E340F2700DE029B /* Build configuration list for PBXProject "Converter" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = F2B371972E3084190042BFC4;
+			mainGroup = F2920B7A2E340F2700DE029B;
 			minimizedProjectReferenceProxies = 1;
 			preferredProjectObjectVersion = 77;
-			productRefGroup = F2B371A12E3084190042BFC4 /* Products */;
+			productRefGroup = F2920B842E340F2700DE029B /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F2B3719F2E3084190042BFC4 /* WeSplit */,
+				F2920B822E340F2700DE029B /* Converter */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		F2B3719E2E3084190042BFC4 /* Resources */ = {
+		F2920B812E340F2700DE029B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -115,7 +115,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		F2B3719C2E3084190042BFC4 /* Sources */ = {
+		F2920B7F2E340F2700DE029B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -125,7 +125,7 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		F2B371AC2E30841B0042BFC4 /* Debug */ = {
+		F2920B8F2E340F2800DE029B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -188,7 +188,7 @@
 			};
 			name = Debug;
 		};
-		F2B371AD2E30841B0042BFC4 /* Release */ = {
+		F2920B902E340F2800DE029B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -244,14 +244,14 @@
 			};
 			name = Release;
 		};
-		F2B371AF2E30841B0042BFC4 /* Debug */ = {
+		F2920B922E340F2800DE029B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"WeSplit/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Converter/Preview Content\"";
 				DEVELOPMENT_TEAM = 9SPA4UXY5J;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -265,7 +265,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leandro.WeSplit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leandro.Converter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -273,14 +273,14 @@
 			};
 			name = Debug;
 		};
-		F2B371B02E30841B0042BFC4 /* Release */ = {
+		F2920B932E340F2800DE029B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"WeSplit/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Converter/Preview Content\"";
 				DEVELOPMENT_TEAM = 9SPA4UXY5J;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -294,7 +294,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.leandro.WeSplit;
+				PRODUCT_BUNDLE_IDENTIFIER = com.leandro.Converter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -305,25 +305,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F2B3719B2E3084190042BFC4 /* Build configuration list for PBXProject "WeSplit" */ = {
+		F2920B7E2E340F2700DE029B /* Build configuration list for PBXProject "Converter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F2B371AC2E30841B0042BFC4 /* Debug */,
-				F2B371AD2E30841B0042BFC4 /* Release */,
+				F2920B8F2E340F2800DE029B /* Debug */,
+				F2920B902E340F2800DE029B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F2B371AE2E30841B0042BFC4 /* Build configuration list for PBXNativeTarget "WeSplit" */ = {
+		F2920B912E340F2800DE029B /* Build configuration list for PBXNativeTarget "Converter" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				F2B371AF2E30841B0042BFC4 /* Debug */,
-				F2B371B02E30841B0042BFC4 /* Release */,
+				F2920B922E340F2800DE029B /* Debug */,
+				F2920B932E340F2800DE029B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = F2B371982E3084190042BFC4 /* Project object */;
+	rootObject = F2920B7B2E340F2700DE029B /* Project object */;
 }

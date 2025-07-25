@@ -1,14 +1,14 @@
 //
-//  WeSplitApp.swift
-//  WeSplit
+//  ConverterApp.swift
+//  Converter
 //
-//  Created by Leandro Motta Junior on 22/07/25.
+//  Created by Leandro Motta Junior on 25/07/25.
 //
 
 import SwiftUI
 
 @main
-struct WeSplitApp: App {
+struct ConverterApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
