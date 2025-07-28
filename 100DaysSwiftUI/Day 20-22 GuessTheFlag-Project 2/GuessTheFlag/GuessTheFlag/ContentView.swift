@@ -289,6 +289,60 @@ struct GuessTheFlagView: View {
     }
 }
 
+// Myself Challenge
+
+struct MyOwnChallenge: View {
+    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
+    @State private var scoreTitle = ""
+    @State private var show = false
+    var body: some View {
+        ZStack {
+            RadialGradient(colors: [.blue, .gray], center: .center, startRadius: 400, endRadius: 200)
+                .ignoresSafeArea()
+            
+            VStack(spacing: 40) {
+                VStack {
+                    Text("Whose Flag is it?")
+                        .font(.title.weight(.heavy))
+                        .foregroundStyle(.primary)
+                    Image(countries[correctAnswer])
+                }
+                
+                ForEach(0..<3) {position in
+                    Button {
+                        tappedCountry(position)
+                    } label: {
+                        Text(countries[position])
+                            .foregroundStyle(.black)
+                    }
+                    .buttonStyle(.bordered)
+                    .background(.ultraThinMaterial)
+                    .clipShape(.capsule)
+                }
+            }
+            .alert(scoreTitle, isPresented: $show) {
+                Button("Continue", action: continueButton)
+            }
+        }
+    }
+    
+    func tappedCountry(_ position: Int) {
+        if position == correctAnswer {
+            scoreTitle = "Correct"
+        } else {
+            scoreTitle = "Wrong"
+        }
+        
+        show = true
+    }
+    
+    func continueButton() {
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+    }
+}
+
 
 
 #Preview {
