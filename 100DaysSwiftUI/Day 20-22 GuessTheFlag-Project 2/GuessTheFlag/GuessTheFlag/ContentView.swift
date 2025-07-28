@@ -218,6 +218,10 @@ struct GuessTheFlagView: View {
     @State private var correctAnswer = Int.random(in: 0...2)
     @State private var showScore = false
     @State private var scoreTitle = ""
+    @State private var endTitle = "" // Day 22
+    @State private var score = 0 // Day 22
+    @State private var count = 0 // Day 22
+    @State private var showEnd = false // Day 22
     
     var body: some View {
         ZStack {
@@ -258,12 +262,22 @@ struct GuessTheFlagView: View {
                 .alert(scoreTitle, isPresented: $showScore) {
                     Button("Continue", action: askQuestion)
                 } message: {
-                    Text("Your score is ???")
+                    Text("Your score is \(score)") // Day 22
+                }
+                // Day 22
+                .alert(endTitle, isPresented: $showEnd) {
+                    Button("Reset", action: resetGame)
+                } message: {
+                    if score <= 40 {
+                        Text("Your final score is \(score). You'll be better next time")
+                    } else {
+                        Text("Congratulations! Your final score is \(score). Well done!")
+                    }
                 }
                 
                 Spacer()
                 Spacer()
-                Text("Score: ???")
+                Text("Score: \(score)") // Day 22
                     .foregroundStyle(.white)
                     .font(.title.bold())
                 
@@ -274,10 +288,20 @@ struct GuessTheFlagView: View {
     }
     
     func flagTapped(_ number: Int) {
+        
+        count += 1 // Day 22
+        
         if number == correctAnswer {
             scoreTitle = "Correct"
+            score += 10
         } else {
-            scoreTitle = "Wrong"
+            scoreTitle = "Wrong! That's the flag of \(countries[number])"
+        }
+        
+        //Day 22
+        if count == 8 {
+            endTitle = "Game Over"
+            showEnd = true
         }
         
         showScore = true
@@ -287,61 +311,71 @@ struct GuessTheFlagView: View {
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
-}
-
-// Myself Challenge
-
-struct MyOwnChallenge: View {
-    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
-    @State private var correctAnswer = Int.random(in: 0...2)
-    @State private var scoreTitle = ""
-    @State private var show = false
-    var body: some View {
-        ZStack {
-            RadialGradient(colors: [.blue, .gray], center: .center, startRadius: 400, endRadius: 200)
-                .ignoresSafeArea()
-            
-            VStack(spacing: 40) {
-                VStack {
-                    Text("Whose Flag is it?")
-                        .font(.title.weight(.heavy))
-                        .foregroundStyle(.primary)
-                    Image(countries[correctAnswer])
-                }
-                
-                ForEach(0..<3) {position in
-                    Button {
-                        tappedCountry(position)
-                    } label: {
-                        Text(countries[position])
-                            .foregroundStyle(.black)
-                    }
-                    .buttonStyle(.bordered)
-                    .background(.ultraThinMaterial)
-                    .clipShape(.capsule)
-                }
-            }
-            .alert(scoreTitle, isPresented: $show) {
-                Button("Continue", action: continueButton)
-            }
-        }
-    }
     
-    func tappedCountry(_ position: Int) {
-        if position == correctAnswer {
-            scoreTitle = "Correct"
-        } else {
-            scoreTitle = "Wrong"
-        }
+    // Day 22
+    func resetGame() {
         
-        show = true
-    }
-    
-    func continueButton() {
+        count = 0
+        score = 0
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
     }
 }
+    
+    // Myself Challenge
+    
+    struct MyOwnChallenge: View {
+        @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+        @State private var correctAnswer = Int.random(in: 0...2)
+        @State private var scoreTitle = ""
+        @State private var show = false
+        var body: some View {
+            ZStack {
+                RadialGradient(colors: [.blue, .gray], center: .center, startRadius: 400, endRadius: 200)
+                    .ignoresSafeArea()
+                
+                VStack(spacing: 40) {
+                    VStack {
+                        Text("Whose Flag is it?")
+                            .font(.title.weight(.heavy))
+                            .foregroundStyle(.primary)
+                        Image(countries[correctAnswer])
+                    }
+                    
+                    ForEach(0..<3) {position in
+                        Button {
+                            tappedCountry(position)
+                        } label: {
+                            Text(countries[position])
+                                .foregroundStyle(.black)
+                        }
+                        .buttonStyle(.bordered)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.capsule)
+                    }
+                }
+                .alert(scoreTitle, isPresented: $show) {
+                    Button("Continue", action: continueButton)
+                }
+            }
+        }
+        
+        func tappedCountry(_ position: Int) {
+            if position == correctAnswer {
+                scoreTitle = "Correct"
+            } else {
+                scoreTitle = "Wrong"
+            }
+            
+            show = true
+        }
+        
+        func continueButton() {
+            countries.shuffle()
+            correctAnswer = Int.random(in: 0...2)
+        }
+    }
+
 
 
 
