@@ -183,6 +183,7 @@ struct ChallengeView: View {
                 
                 Section ("Total Amount") {
                     Text(totalAmount, format: .currency(code: Locale.current.currency?.identifier ?? "USD"))
+                        .foregroundStyle(tipPercentage == 0 ? .red : .black)
                 }
             }
             .navigationTitle("WeSplit") // Add a title in the page and side by back button after clicking the Picker
