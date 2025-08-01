@@ -377,7 +377,9 @@ struct GuessTheFlagView: View {
     }
 
 /* Day 24 Challenge 2
- Go back to project 2 and replace the Image view used for flags with a new FlagImage() view that renders one flag image using the specific set of modifiers we had.
+ 1 - Made in project 1
+ 2 - Go back to project 2 and replace the Image view used for flags with a new FlagImage() view that renders one flag image using the specific set of modifiers we had.
+ 3 - Create a custom ViewModifier (and accompanying View extension) that makes a view have a large, blue font suitable for prominent titles in a view.
  */
 
 struct FlagImage: View {
@@ -387,6 +389,20 @@ struct FlagImage: View {
         Image(images[number])
             .clipShape(.capsule)
             .shadow(radius: 5)
+    }
+}
+
+struct Title: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.largeTitle.weight(.semibold))
+            .foregroundStyle(.blue)
+    }
+}
+
+extension View {
+    func proeminentTitle() -> some View {
+        modifier(Title())
     }
 }
 
@@ -419,7 +435,7 @@ struct GuessTheFlagViewChallenge: View {
                             .font(.subheadline.weight(.heavy))
                             .foregroundStyle(.secondary)
                         Text(countries[correctAnswer])
-                            .font(.largeTitle.weight(.semibold))
+                            .proeminentTitle()
                     }
                     
                     ForEach(0..<3) {number in
