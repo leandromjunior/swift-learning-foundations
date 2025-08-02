@@ -183,6 +183,8 @@ struct CustomView: View {
     }
 }
 
+// Day 24 - The changes will be set on project 1 and 2 files based on what was learned at day 23
+
 #Preview {
     CustomView()
 }
