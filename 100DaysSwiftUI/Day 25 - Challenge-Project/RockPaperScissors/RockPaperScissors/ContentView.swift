@@ -5,6 +5,13 @@
 //  Created by Leandro Motta Junior on 01/08/25.
 //
 
+/* Future implementations
+ 1 - When the user chooses the same answer (for example, the machine chose paper and the
+ user either) the user has to return a message of draw and nothing is scored)
+ 
+ 2 - Improve the UI
+ */
+
 import SwiftUI
 
 struct ContentView: View {
