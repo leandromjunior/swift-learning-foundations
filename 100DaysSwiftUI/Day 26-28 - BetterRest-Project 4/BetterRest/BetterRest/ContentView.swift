@@ -135,6 +135,90 @@ struct BetterRest: View {
     }
 }
 
+/*
+ Day 28
+ 1 - Replace each VStack in our form with a Section, where the text view is the title of the section. Do you prefer this layout or the VStack layout? It’s your app – you choose!
+ 2 - Replace the “Number of cups” stepper with a Picker showing the same range of values.
+ 3 - Change the user interface so that it always shows their recommended bedtime using a nice and large font. You should be able to remove the “Calculate” button entirely.
+ */
+struct RefactoringBetterRest: View {
+    
+    @State private var wakeUp = defaultWakeTime //By default the wakeUp value will be 7:00
+    @State private var sleepAmount = 8.0
+    @State private var coffeeAmount = 1
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var showingAlert = false
+    
+    static var defaultWakeTime: Date {
+        var components = DateComponents()
+        components.hour = 7
+        components.minute = 0
+        
+        return Calendar.current.date(from: components) ?? .now // nill coalescing
+    }
+    
+    var body: some View {
+        
+        NavigationStack {
+            Form {
+                Section("When do you want to wake up") {
+                
+                DatePicker("Enter a datetime", selection: $wakeUp, displayedComponents: .hourAndMinute)
+                    .labelsHidden()
+            }
+             
+                Section("Desired amount of sleep") {
+                    
+                    Stepper("\(sleepAmount.formatted()) hours", value: $sleepAmount, in: 4...12, step: 0.5)
+                }
+                
+                Section("Daily coffee intake") {
+                    
+                    Picker("Select the cups", selection: $coffeeAmount) {
+                        ForEach(1..<21) {cups in
+                            Text(cups == 1 ? "\(cups) cup" : "\(cups) cups")
+                        }
+                    }
+                }
+                
+                VStack {
+                    HStack {
+                        Text("Bedtime")
+                            .font(.title)
+                        
+                        Spacer()
+                        
+                        calculateBedTime()
+                    }
+                    .foregroundStyle(.blue)
+                }
+            }
+            .navigationTitle("Better Rest")
+        }
+    }
+    
+    func calculateBedTime() -> some View {
+        
+        do {
+            let config = MLModelConfiguration()
+            let model = try SleepCalculator(configuration: config)
+            
+            let components = Calendar.current.dateComponents([.hour, .minute], from: wakeUp)
+            let hour = (components.hour ?? 0) * 60 * 60 // Converting to seconds
+            let minute = (components.minute ?? 0) * 60 // Converting to seconds
+            
+            let prediction = try model.prediction(wake: Double(hour + minute), estimatedSleep: sleepAmount, coffee: Double(coffeeAmount))
+            
+            let sleepTime = wakeUp - prediction.actualSleep
+            
+            return Text("\(sleepTime.formatted(date: .omitted, time: .shortened))")
+        } catch {
+            return Text("Sorry, there was a problem calculating your bedtime.")
+        }
+    }
+}
+
 #Preview {
-    BetterRest()
+    RefactoringBetterRest()
 }
