@@ -174,3 +174,38 @@ let office = Office(numberOfRooms: 6, cost: 100_000, estateAgent: "Patrick")
 
 house.salesSummary()
 office.salesSummary()
+
+protocol BuildingUpdated {
+    var numberOfRooms: Int { get }
+    var baseCost: Int { get set }
+    var estateAgent: String { get set }
+    
+    func salesSummary()
+}
+
+extension BuildingUpdated {
+    var cost: Int {
+        return baseCost * numberOfRooms
+    }
+    func salesSummary() {
+        print("The building has \(numberOfRooms) rooms and it costs USD \(cost). Contact our Estate Agent \(estateAgent) for more details.")
+    }
+}
+
+struct HouseUpdated: BuildingUpdated {
+    let numberOfRooms: Int
+    var baseCost: Int
+    var estateAgent: String
+}
+
+struct OfficeUpdated: BuildingUpdated {
+    let numberOfRooms: Int
+    var baseCost: Int
+    var estateAgent: String
+}
+
+let houseUpdated = HouseUpdated(numberOfRooms: 3, baseCost: 200_000, estateAgent: "Alicia")
+let officeUpdated = OfficeUpdated(numberOfRooms: 6, baseCost: 100_000, estateAgent: "Patrick")
+
+houseUpdated.salesSummary()
+officeUpdated.salesSummary()
