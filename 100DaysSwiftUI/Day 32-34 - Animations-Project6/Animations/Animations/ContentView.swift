@@ -112,6 +112,92 @@ struct ContentView: View {
     }
 }
 
+// Day 33
+struct AnimationStack: View {
+    @State private var enabled = false
+    var body: some View {
+        Button("Tap Me") {
+            enabled.toggle()
+        }
+        .frame(width: 250, height: 250)
+        .background(enabled ? .blue : .red)
+        .animation(nil, value: enabled)
+        .foregroundStyle(.white)
+        .clipShape(.rect(cornerRadius: enabled ? 60 : 0))
+        .animation(.spring(duration: 1, bounce: 0.6), value: enabled)
+    }
+}
+
+struct AnimationGestures: View {
+    @State private var dragAmount = CGSize.zero
+    var body: some View {
+        LinearGradient(colors: [.yellow, .red], startPoint: .topLeading, endPoint: .bottomTrailing)
+            .frame(width: 300, height: 200)
+            .clipShape(.rect(cornerRadius: 10))
+            .offset(dragAmount)
+            .gesture(
+                DragGesture()
+                    .onChanged { dragAmount = $0.translation} // performs the drag action
+                    //.onEnded {_ in dragAmount = .zero } // When we release, the "card" go to the middle (position 0) again
+                // Adding the peace of code below and removing the animation below from the lineargradient, we have the bounce animation only on the release (onEnded) of the card
+                    .onEnded {_ in
+                        withAnimation(.bouncy) {
+                            dragAmount = .zero
+                        }
+                    }
+            )
+            //.animation(.bouncy, value: dragAmount)
+    }
+}
+
+struct NotSoUsableAnimation: View {
+    @State private var letters = Array("Hello SwiftUI")
+    @State private var enabled = false
+    @State private var dragAmount = CGSize.zero
+    
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(0..<letters.count, id: \.self) {num in
+                Text(String(letters[num]))
+                    .padding(5)
+                    .font(.title)
+                    .background(enabled ? .blue : .red)
+                    .offset(dragAmount)
+                    .animation(.linear.delay(Double(num) / 20), value: dragAmount)
+            }
+        }
+        .gesture(
+            DragGesture()
+                .onChanged { dragAmount = $0.translation}
+                .onEnded {_ in
+                    dragAmount = .zero
+                    enabled.toggle()
+                }
+        )
+    }
+}
+
+struct ShowingHidingView: View {
+    @State private var isShowingRed = false
+    var body: some View {
+        VStack {
+            Button("Tap Me") {
+                withAnimation { // optional but gives a cool effect
+                    isShowingRed.toggle()
+                }
+            }
+            
+            if isShowingRed {
+                Rectangle()
+                    .fill(.red)
+                    .frame(width: 200, height: 200)
+                    //.transition(.scale) // optional but improves the effect
+                    .transition(.asymmetric(insertion: .scale, removal: .opacity)) // optional but improves the effect
+            }
+        }
+    }
+}
+
 #Preview {
-    ContentView()
+    ShowingHidingView()
 }
