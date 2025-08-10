@@ -510,7 +510,125 @@ struct GuessTheFlagViewChallenge: View {
     }
 }
 
+// Challenge Day 34
+/*
+ 1 - When you tap a flag, make it spin around 360 degrees on the Y axis
+ 2 - Make the other two buttons fade out to 25% opacity
+ */
+struct AnimationChallenge: View {
+    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Spain", "UK", "Ukraine", "US"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
+    @State private var showScore = false
+    @State private var scoreTitle = ""
+    @State private var endTitle = "" // Day 22
+    @State private var score = 0 // Day 22
+    @State private var count = 0 // Day 22
+    @State private var showEnd = false // Day 22
+    
+    @State private var tappedButton = -1 // Challenge 1 and 2
+    
+    var body: some View {
+        ZStack {
+            RadialGradient(stops: [
+                .init(color: Color(red: 141/255, green: 124/255, blue: 85/255), location: 0.3),
+                .init(color: Color(red:34/255, green: 67/255, blue: 88/255), location: 0.3)
+            ], center: .top, startRadius: 200, endRadius: 400)
+            .ignoresSafeArea()
+            VStack {
+                Spacer()
+                
+                Text("Guess The Flag")
+                    .font(.largeTitle.weight(.bold))
+                    .foregroundStyle(.white)
+                VStack(spacing: 15) {
+                    VStack {
+                        Text("Tap the flag of:")
+                            .font(.subheadline.weight(.heavy))
+                            .foregroundStyle(.secondary)
+                        Text(countries[correctAnswer])
+                            .proeminentTitle()
+                    }
+                    
+                    ForEach(0..<3) {number in
+                        Button {
+                            flagTapped(number)
+                            withAnimation(.spring(duration: 1, bounce: 0.5)) { // Challenge 1 and 2
+                                tappedButton = number // Challenge 1 and 2
+                            }
+                        } label: {
+                            FlagImage(images: countries, number: number)
+                        }
+                        .rotation3DEffect(.degrees(tappedButton == number ? 360 : 0), axis: (x: 0, y: 1, z: 0)) //Challenge 1
+                        // Challenge 3
+                        .rotation3DEffect(.degrees(tappedButton == -1 || tappedButton == number ? 360 : 0), axis: (x: 1, y: 0, z: 0))
+                        .opacity(tappedButton == -1 || tappedButton == number ? 1 : 0.25) //Challenge 2
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 30)
+                .background(.ultraThinMaterial)
+                .clipShape(.rect(cornerRadius: 20))
+                .alert(scoreTitle, isPresented: $showScore) {
+                    Button("Continue", action: askQuestion)
+                } message: {
+                    Text("Your score is \(score)") // Day 22
+                }
+                .alert(endTitle, isPresented: $showEnd) {
+                    Button("Reset", action: resetGame)
+                } message: {
+                    if score <= 40 {
+                        Text("Your final score is \(score). You'll be better next time")
+                    } else {
+                        Text("Congratulations! Your final score is \(score). Well done!")
+                    }
+                }
+                
+                Spacer()
+                Spacer()
+                Text("Score: \(score)") // Day 22
+                    .foregroundStyle(.white)
+                    .font(.title.bold())
+                
+                Spacer()
+            }
+            .padding()
+        }
+    }
+    
+    func flagTapped(_ number: Int) {
+        
+        count += 1
+        
+        if number == correctAnswer {
+            scoreTitle = "Correct"
+            score += 10
+        } else {
+            scoreTitle = "Wrong! That's the flag of \(countries[number])"
+        }
+        
+        if count == 8 {
+            endTitle = "Game Over"
+            showEnd = true
+        }
+        
+        showScore = true
+    }
+    
+    func askQuestion() {
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        tappedButton = -1 // Challenge 1 and 2
+    }
+    
+    func resetGame() {
+        
+        count = 0
+        score = 0
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+    }
+}
 
 #Preview {
-    GuessTheFlagViewChallenge()
+    AnimationChallenge()
 }
