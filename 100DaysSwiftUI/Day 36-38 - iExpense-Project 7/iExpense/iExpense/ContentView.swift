@@ -160,7 +160,7 @@ struct ExpenseItem: Identifiable, Codable {
 class Expenses {
     var items = [ExpenseItem]() {
         didSet {
-            if let encoded = try? JSONEncoder().encode(items) {
+                if let encoded = try? JSONEncoder().encode(items) {
                 UserDefaults.standard.set(encoded, forKey: "Items")
             }
         }
