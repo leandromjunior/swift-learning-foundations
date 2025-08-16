@@ -59,6 +59,12 @@ extension Bundle {
         }
         
         let decoder = JSONDecoder()
+        // Instantiating the DateFormatter
+        let formatter = DateFormatter()
+        // This brings the date in the asked format (M is capitalized because it refers do Month, otherwise it would mean minutes)
+        formatter.dateFormat = "y-MM-dd"
+        // Finally, that tells the decoder to parse dates in the exact format we expect
+        decoder.dateDecodingStrategy = .formatted(formatter)
         
         // The code below is fine, but to make the code more reusable in some future it's recommended adding some extra code to help on diagnose problems
         /*
