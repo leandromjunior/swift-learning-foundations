@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct ImageManipulationView: View {
     var body: some View {
         Image(.golden)
             .resizable()
@@ -194,6 +194,19 @@ struct ScrollingHorizontalGridView: View {
     }
 }
 
+// Day 40
+
+struct ContentView: View {
+    // Because of the change in the func decode (Bundle-Dccodable) i had to change this line of code inserting the [String: Atronaut] type annotation
+    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+    
+    let missions: [Mission] = Bundle.main.decode("missions.json")
+    
+    var body: some View {
+        Text(String(astronauts.count))
+    }
+}
+
 #Preview {
-    ScrollingHorizontalGridView()
+    ContentView()
 }
