@@ -28,6 +28,13 @@ struct MissionView: View {
                     }
                     .padding(.top)
                 
+                // Starting code made for the challenge [item 1] - Day 42
+                Text(mission.formattedLaunchDate)
+                    .padding(.top, 10)
+                    .foregroundStyle(.white.opacity(0.5))
+                // Ending code made for the challenge [item 1] - Day 42
+                
+                
                 VStack(alignment: .leading) {
                     // Adding a visual divider
                     Rectangle()
@@ -106,6 +113,6 @@ struct MissionView: View {
     let missions: [Mission] = Bundle.main.decode("missions.json")
     let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
     
-    return MissionView(mission: missions[1], astronauts: astronauts)
+    return MissionView(mission: missions[3], astronauts: astronauts)
         .preferredColorScheme(.dark)
 }
