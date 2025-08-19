@@ -101,39 +101,6 @@ struct MissionView: View {
                 }
                 .padding(.horizontal)
                 
-                // Here i just replaced the text below for the HorizontalScrolling view
-                /*
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        ForEach(crew, id: \.role) { crewMember in
-                            NavigationLink {
-                                AstronautView(astronaut: crewMember.astronaut)
-                            } label: {
-                                HStack {
-                                    Image(crewMember.astronaut.id)
-                                        .resizable()
-                                        .frame(width: 104, height: 72)
-                                        .clipShape(.circle)
-                                        .overlay(
-                                            Circle()
-                                                .strokeBorder(.gray, lineWidth: 2)
-                                        )
-                                    
-                                    VStack(alignment: .leading) {
-                                        Text(crewMember.astronaut.name)
-                                            .foregroundStyle(.white)
-                                            .font(.headline)
-                                        Text(crewMember.role)
-                                            .foregroundStyle(.white.opacity(0.5))
-                                    }
-                                }
-                                .padding(.horizontal)
-                            }
-                        }
-                    }
-                }
-                 */
-                
                 // Starting code made for the challenge [item 2] - Day 42
                 HorizontalScrolling(contentCrew: crew)
                 // Ending code made for the challenge [item 2] - Day 42
@@ -165,3 +132,38 @@ struct MissionView: View {
     return MissionView(mission: missions[3], astronauts: astronauts)
         .preferredColorScheme(.dark)
 }
+
+// Notes:
+
+/* The code HorizontalScrolling on line 105 replaced the following code:
+ 
+ ScrollView(.horizontal, showsIndicators: false) {
+     HStack {
+         ForEach(crew, id: \.role) { crewMember in
+             NavigationLink {
+                 AstronautView(astronaut: crewMember.astronaut)
+             } label: {
+                 HStack {
+                     Image(crewMember.astronaut.id)
+                         .resizable()
+                         .frame(width: 104, height: 72)
+                         .clipShape(.circle)
+                         .overlay(
+                             Circle()
+                                 .strokeBorder(.gray, lineWidth: 2)
+                         )
+                     
+                     VStack(alignment: .leading) {
+                         Text(crewMember.astronaut.name)
+                             .foregroundStyle(.white)
+                             .font(.headline)
+                         Text(crewMember.role)
+                             .foregroundStyle(.white.opacity(0.5))
+                     }
+                 }
+                 .padding(.horizontal)
+             }
+         }
+     }
+ }
+*/
