@@ -7,6 +7,54 @@
 
 import SwiftUI
 
+//Starting code made for the challenge [item 2] - Day 42
+struct LineDivider: View {
+    var body: some View {
+        Rectangle()
+            .frame(height: 3)
+            .foregroundStyle(.lightBackground)
+            .padding(.vertical)
+    }
+}
+
+struct HorizontalScrolling: View {
+    
+    var contentCrew: [MissionView.CrewMember]
+    
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+                ForEach(contentCrew, id: \.role) { crewMember in
+                    NavigationLink {
+                        AstronautView(astronaut: crewMember.astronaut)
+                    } label: {
+                        HStack {
+                            Image(crewMember.astronaut.id)
+                                .resizable()
+                                .frame(width: 104, height: 72)
+                                .clipShape(.circle)
+                                .overlay(
+                                    Circle()
+                                        .strokeBorder(.gray, lineWidth: 2)
+                                )
+                            
+                            VStack(alignment: .leading) {
+                                Text(crewMember.astronaut.name)
+                                    .foregroundStyle(.white)
+                                    .font(.headline)
+                                Text(crewMember.role)
+                                    .foregroundStyle(.white.opacity(0.5))
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+            }
+        }
+    }
+}
+//Ending code made for the challenge [item 2] - Day 42
+
 // Day 41
 struct MissionView: View {
     struct CrewMember {
@@ -37,10 +85,7 @@ struct MissionView: View {
                 
                 VStack(alignment: .leading) {
                     // Adding a visual divider
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundStyle(.lightBackground)
-                        .padding(.vertical)
+                    LineDivider() //View developed for day 42 challenge
                     
                     Text("Mission Highlights")
                         .font(.title.bold())
@@ -48,10 +93,7 @@ struct MissionView: View {
                     
                     Text(mission.description)
                     // Adding a visual divider
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundStyle(.lightBackground)
-                        .padding(.vertical)
+                    LineDivider() //View developed for day 42 challenge
                     
                     Text("Crew")
                         .font(.title.bold())
@@ -59,6 +101,8 @@ struct MissionView: View {
                 }
                 .padding(.horizontal)
                 
+                // Here i just replaced the text below for the HorizontalScrolling view
+                /*
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
                         ForEach(crew, id: \.role) { crewMember in
@@ -88,6 +132,11 @@ struct MissionView: View {
                         }
                     }
                 }
+                 */
+                
+                // Starting code made for the challenge [item 2] - Day 42
+                HorizontalScrolling(contentCrew: crew)
+                // Ending code made for the challenge [item 2] - Day 42
             }
             .padding(.bottom)
         }
