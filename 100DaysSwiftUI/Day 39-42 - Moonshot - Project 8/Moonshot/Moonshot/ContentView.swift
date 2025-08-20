@@ -194,27 +194,59 @@ struct ScrollingHorizontalGridView: View {
     }
 }
 
-// Day 40
+// Day 42
+//Starting code made for the challenge [item 3]
+struct ListView: View {
+    var astronautsListView: [String: Astronaut]
+    var missionsListView: [Mission]
+    @State var isShowing = true
+    
+    var body: some View {
+        List {
+            ForEach(missionsListView) { mission in
+                NavigationLink {
+                    MissionView(mission: mission, astronauts: astronautsListView)
+                } label: {
+                    Image(mission.image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
+                    
+                    VStack {
+                        Text(mission.displayName)
+                            .font(.headline)
+                        
+                        Text(mission.formattedLaunchDate)
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.5))
+                    }
+                }
+            }
+        }
+        .navigationTitle("Moonshot")
+        .background(.darkBackground)
+        .preferredColorScheme(.dark)
+    }
+}
+//Ending code made for the challenge [item 3]
 
-struct ContentView: View {
-    // Because of the change in the func decode (Bundle-Dccodable) i had to change this line of code inserting the [String: Atronaut] type annotation
-    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
-    
-    let missions: [Mission] = Bundle.main.decode("missions.json")
-    
+//Starting code made for the challenge [item 3] - The major part of this code was just realocated from ContentView to GridView. I only modified the line 234, 235 to get the type annotation only and included the line 239
+struct GridView: View {
+    var astronautsGridView: [String: Astronaut]
+    var missionsGridView: [Mission]
     let columns = [
         GridItem(.adaptive(minimum: 150))
     ]
+    @State var isShowingView: Bool
     
     var body: some View {
-        //        Text(String(astronauts.count)) - Was just to test if the decoder was OK
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns) {
-                    ForEach(missions) { mission in
+                    ForEach(missionsGridView) { mission in
                         NavigationLink {
                             // Day 41
-                            MissionView(mission: mission, astronauts: astronauts)
+                            MissionView(mission: mission, astronauts: astronautsGridView)
                         } label: {
                             VStack {
                                 Image(mission.image)
@@ -249,6 +281,47 @@ struct ContentView: View {
             .background(.darkBackground)
             .preferredColorScheme(.dark) // It makes the Moonshot title white
         }
+    }
+}
+//Ending code made for the challenge [item 3]
+
+// Day 40
+
+struct ContentView: View {
+    // Because of the change in the func decode (Bundle-Dccodable) i had to change this line of code inserting the [String: Atronaut] type annotation
+    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+    
+    let missions: [Mission] = Bundle.main.decode("missions.json")
+    
+    //Starting code made for the challenge [item 3]
+    @State private var isShowingView = true
+    //Ending code made for the challenge [item 3]
+    
+    var body: some View {
+        //        Text(String(astronauts.count)) - Was just to test if the decoder was OK
+        
+        //Starting code made for the challenge [item 3]
+        NavigationStack {
+            if isShowingView {
+                GridView(astronautsGridView: astronauts, missionsGridView: missions, isShowingView: isShowingView)
+                    .toolbar {
+                        Button("List") {
+                            isShowingView.toggle()
+                        }
+                        .foregroundStyle(.yellow)
+                    }
+
+            } else {
+                ListView(astronautsListView: astronauts, missionsListView: missions, isShowing: isShowingView)
+                    .toolbar {
+                        Button("Grid") {
+                            isShowingView.toggle()
+                    }
+                        .foregroundStyle(.yellow)
+                }
+            }
+        }
+        //Ending code made for the challenge [item 3]
     }
 }
 
