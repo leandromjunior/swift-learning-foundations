@@ -279,6 +279,67 @@ struct ChallengeContentView: View {
     }
 }
 
+// Day 46 - Challenge [1]
+
+/*
+1 - Change project 7 (iExpense) so that it uses NavigationLink for adding new expenses rather than a sheet. (Tip: The dismiss() code works great here, but you might want to add the navigationBarBackButtonHidden() modifier so they have to explicitly choose Cancel.)
+ */
+
+struct ChallengeNavigationView: View {
+    
+    @State private var expenses = Expenses()
+    @State private var showingAddExpense = false
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(expenses.items) { item in
+                    HStack {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text(item.name)
+                                .font(.headline)
+                            
+                            Text(item.type)
+                        }
+                        
+                        Spacer()
+                        
+                        if item.amount == 0 {
+                            Text(item.amount, format: .currency(code: "BRL"))
+                                .foregroundStyle(.green)
+                        } else if item.amount < 10 {
+                            Text(item.amount, format: .currency(code: "BRL"))
+                                .foregroundStyle(.yellow)
+                        } else if item.amount < 100 {
+                            Text(item.amount, format: .currency(code: "BRL"))
+                                .foregroundStyle(.orange)
+                        } else {
+                            Text(item.amount, format: .currency(code: "BRL"))
+                                .foregroundStyle(.red)
+                        }
+                            
+                    }
+                }
+                .onDelete(perform: removeItems)
+            }
+            .navigationTitle("iExpense")
+            .toolbar {
+                NavigationLink() {
+                    AddView(expenses: expenses)
+                        .navigationBarBackButtonHidden(true) //added this modifier to hide the default back button in the AddView and in the "AddView" view i created another toolbar with a cancel button and the dismiss environment method
+
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+    }
+    
+    func removeItems(at offsets: IndexSet) {
+        expenses.items.remove(atOffsets: offsets)
+    }
+}
+
 #Preview {
-    ChallengeContentView()
+    ChallengeNavigationView()
 }
