@@ -224,7 +224,9 @@ struct ListView: View {
             }
         }
         .navigationTitle("Moonshot")
+        .listRowBackground(Color.yellow)
         .background(.darkBackground)
+        .scrollContentBackground(.hidden)
         .preferredColorScheme(.dark)
     }
 }
