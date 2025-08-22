@@ -292,6 +292,106 @@ struct SavingNavigationPathView: View {
     }
 }
 
+// Day 45
+
+// Customizing the navigation bar appearence
+struct NavigationBarCustomView: View {
+    var body: some View {
+        NavigationStack {
+            List(0..<100) { i in
+                Text("Row \(i)")
+            }
+            .navigationTitle("Title goes here")
+            .navigationBarTitleDisplayMode(.inline) // This center the title
+            .toolbarBackground(.blue) // When the user scrolls, the navigationbar turns blue
+            .toolbarColorScheme(.dark) // Makes the title "foregroundstyle" white when scrolled
+            .toolbar(.hidden, for: .navigationBar) // Hide the navigation bar
+        }
+    }
+}
+
+// Placing toolbar buttons in exact locations
+struct ButtonsLocationsView: View {
+    var body: some View {
+        NavigationStack {
+            Text("Hello World")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Tap Me") {
+                            // some code
+                        }
+                    }
+                }
+        }
+    }
+}
+
+/*
+ usually it's better to use one of the semantic options – placement that have specific meaning, rather than relying just on their location. These include:
+
+ .confirmationAction, when you want users to agree to something, such as agreeing to terms of service.
+ 
+ .destructiveAction, when the user needs to make a choice to destroy whatever it is they are working with, such as confirming they want to remove some data they created.
+ 
+ .cancellationAction, when the user needs to back out of changes they have made, such as discarding changes they have made.
+ 
+ .navigation, which is used for buttons that make the user move between data, such as going back and forward in a web browser.
+ */
+
+struct TwoButtonsLocationsView: View {
+    var body: some View {
+        NavigationStack {
+            Text("Hello World")
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Tap Me") {
+                            // some code
+                        }
+                    }
+                    // This places two buttons in the navigation bar (side by side)
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Tap Me") {
+                            // some code
+                        }
+                    }
+                }
+        }
+    }
+}
+
+// The code below makes the same as the code above, but in some codeless way. This is useful when we are aligning two buttons in a same position (leading, trailing, etc.)
+struct GroupButtonsLocationsView: View {
+    var body: some View {
+        NavigationStack {
+            Text("Hello World")
+                .toolbar {
+                    ToolbarItemGroup(placement: .topBarLeading) {
+                        Button("Tap Me") {
+                            // some code
+                        }
+                        
+                        Button("Other tap me") {
+                            // some code
+                        }
+                    }
+                }
+        }
+    }
+}
+
+// Making the navigation title editable
+
+struct EditableNavigationTitle: View {
+    @State private var title = "SwiftUI"
+    var body: some View {
+        NavigationStack {
+            Text("Hello, world!")
+                .navigationTitle($title)
+                .navigationBarTitleDisplayMode(.inline)
+        }
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         VStack {
@@ -305,5 +405,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    SavingNavigationPathView()
+    EditableNavigationTitle()
 }
