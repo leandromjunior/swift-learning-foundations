@@ -327,6 +327,150 @@ struct ContentView: View {
     }
 }
 
+// Day 46 - Challenge [Item 3]
+/*
+ 3 - Return to project 8 (Moonshot), and upgrade it to use NavigationLink(value:). This means adding Hashable conformance, and thinking carefully how to use navigationDestination().
+ */
+
+struct ChallengeListView: View {
+    var astronautsListView: [String: Astronaut]
+    var missionsListView: [Mission]
+    @State var isShowing = true
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                ForEach(missionsListView) { mission in
+                    NavigationLink(value: mission, label: {
+                        Image(mission.image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 40, height: 40)
+                        
+                        VStack {
+                            Text(mission.displayName)
+                                .font(.headline)
+                            
+                            Text(mission.formattedLaunchDate)
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.5))
+                        }
+                    })
+                }
+                .listRowBackground(Color.darkBackground)
+            }
+            .navigationDestination(for: Mission.self) { m in
+                MissionView(mission: m, astronauts: astronautsListView)
+            }
+            .navigationTitle("Moonshot")
+            .listRowBackground(Color.lightBackground)
+            .background(.darkBackground)
+            .scrollContentBackground(.hidden)
+            .preferredColorScheme(.dark)
+        }
+    }
+}
+
+struct ChallengeGridView: View {
+    var astronautsGridView: [String: Astronaut]
+    var missionsGridView: [Mission]
+    let columns = [
+        GridItem(.adaptive(minimum: 150))
+    ]
+    @State var isShowingView: Bool
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LazyVGrid(columns: columns) {
+                    ForEach(missionsGridView) { mission in
+                        NavigationLink(value: mission, label: {
+                            VStack {
+                                Image(mission.image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                                    .padding()
+                                
+                                VStack {
+                                    Text(mission.displayName)
+                                        .font(.headline)
+                                        .foregroundStyle(.white)
+                                    Text(mission.formattedLaunchDate)
+                                        .font(.caption)
+                                        .foregroundStyle(.white.opacity(0.5))
+                                }
+                                .padding(.vertical)
+                                .frame(maxWidth: .infinity)
+                                .background(.lightBackground)
+                            }
+                        })
+                    }
+                    .clipShape(.rect(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.lightBackground)
+                    )
+                }
+                .padding([.horizontal, .bottom])
+                .navigationDestination(for: Mission.self) {m in
+                    MissionView(mission: m, astronauts: astronautsGridView)
+                }
+            }
+            .navigationTitle("Moonshot")
+            .background(.darkBackground)
+            .preferredColorScheme(.dark) // It makes the Moonshot title white
+        }
+    }
+}
+
+struct ChallengeContentView: View {
+    
+    let astronauts: [String: Astronaut] = Bundle.main.decode("astronauts.json")
+    
+    let missions: [Mission] = Bundle.main.decode("missions.json")
+    
+    @State private var isShowingView = true
+    
+    var body: some View {
+        NavigationStack {
+            if isShowingView {
+                ChallengeGridView(astronautsGridView: astronauts, missionsGridView: missions, isShowingView: isShowingView)
+                    .toolbar {
+                        Button("List") {
+                            isShowingView.toggle()
+                        }
+                        .foregroundStyle(.yellow)
+                    }
+
+            } else {
+                ChallengeListView(astronautsListView: astronauts, missionsListView: missions, isShowing: isShowingView)
+                    .toolbar {
+                        Button("Grid") {
+                            isShowingView.toggle()
+                    }
+                        .foregroundStyle(.yellow)
+                }
+            }
+        }
+    }
+}
+
+struct Teste: View {
+    var body: some View {
+        NavigationStack {
+            List(0..<10) { i in
+                NavigationLink(value: i, label: {
+                    Text("Example \(i)")
+                })
+            }
+            .navigationDestination(for: Int.self) { selection in
+                Text("Selected \(selection)")
+            }
+        }
+    }
+}
+
 #Preview {
-    ContentView()
+    ChallengeContentView()
 }
