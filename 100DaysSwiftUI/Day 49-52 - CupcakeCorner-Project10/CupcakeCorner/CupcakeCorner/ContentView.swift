@@ -133,18 +133,141 @@ struct FormValidationUsingComputedProperty: View {
     }
 }
 
-struct ContentView: View {
+// Day 50
+
+// Adding Codable conformance to an @observable class
+
+@Observable
+class User: Codable {
+    var name = "Taylor"
+}
+
+struct CodableClassView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Button("Encode Taylor", action: encodeTaylor)
+    }
+    
+    func encodeTaylor() {
+        let data = try! JSONEncoder().encode(User())
+        let str = String(decoding: data, as: UTF8.self)
+        print(str) // {"_$observationRegistrar":{},"_name":"Taylor"}
+    }
+}
+
+class UserTreated: Codable {
+    enum COdingKeys: String, CodingKey {
+        case _name = "name"
+    }
+    var name = "Taylor"
+}
+
+struct CodableClassTreatedView: View {
+    var body: some View {
+        Button("Encode Taylor", action: encodeTaylor)
+    }
+    
+    func encodeTaylor() {
+        let data = try! JSONEncoder().encode(UserTreated())
+        let str = String(decoding: data, as: UTF8.self)
+        print(str) // {"name":"Taylor"}
+    }
+}
+
+// Adding haptic effects
+
+struct BasicHapticsView: View {
+    @State private var counter = 0
+    var body: some View {
+        Button("Tap Count: \(counter)") {
+            counter += 1
         }
-        .padding()
+        .sensoryFeedback(.increase, trigger: counter) //This command makes the cellphone vibrate when tapping the button
+        .sensoryFeedback(.impact(flexibility: .soft, intensity: 0.5), trigger: counter) //Another option
+        .sensoryFeedback(.impact(weight: .heavy, intensity: 1), trigger: counter)
+    }
+}
+
+// For more advanced haptics, the framework Core Haptics can be used
+import CoreHaptics
+
+struct AdvancedHapticsView: View {
+    @State private var engine: CHHapticEngine?
+    var body: some View {
+        Button("Tap Me", action: complexSuccess)
+            .onAppear(perform: prepareHaptics)
+    }
+    
+    func prepareHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        
+        do {
+            engine = try CHHapticEngine()
+            try engine?.start()
+        } catch {
+            print("There was an error creating the engine \(error.localizedDescription)")
+        }
+    }
+    
+    func complexSuccess() {
+        // make sure that the device supports haptics
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        var events = [CHHapticEvent]()
+
+        // create one intense, sharp tap
+        let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: 1)
+        let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 1)
+        let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
+        events.append(event)
+
+        // convert those events into a pattern and play it immediately
+        do {
+            let pattern = try CHHapticPattern(events: events, parameters: [])
+            let player = try engine?.makePlayer(with: pattern)
+            try player?.start(atTime: 0)
+        } catch {
+            print("Failed to play pattern: \(error.localizedDescription).")
+        }
+    }
+}
+
+// Cupcake Corner App
+
+struct ContentView: View {
+    @State private var order = Order()
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Picker("Select your cake type", selection: $order.type) {
+                        ForEach(Order.types.indices, id: \.self) {
+                            Text(Order.types[$0])
+                        }
+                    }
+                    
+                    Stepper("Number of Cakes: \(order.quantity)", value: $order.quantity, in: 3...20)
+                }
+                
+                Section {
+                    Toggle("Any special requests?", isOn: $order.specialRequestEnable)
+                    
+                    if order.specialRequestEnable {
+                        Toggle("Add extra frosting", isOn: $order.extraFrosting)
+                        
+                        Toggle("Add extra sprinkles?", isOn: $order.addSprinkles)
+                    }
+                }
+                
+                Section {
+                    NavigationLink("Delivery Details") {
+                        AdressView(order: order)
+                    }
+                }
+            }
+            .navigationTitle("Cupcake Corner")
+        }
     }
 }
 
 #Preview {
-    FormValidation()
+    ContentView()
 }
