@@ -12,6 +12,7 @@ struct AddView: View {
     
     @State private var name = ""
     @State private var description = ""
+    @State private var registerCount = 0
     
     var habitTracker: Habits
     
@@ -24,7 +25,7 @@ struct AddView: View {
             .navigationTitle("New Habit")
             .toolbar {
                 Button("Save") {
-                    let habit = Habit(name: name, description: description)
+                    let habit = Habit(name: name, description: description, registerCount: registerCount)
                     habitTracker.habits.append(habit)
                     
                     dismiss()

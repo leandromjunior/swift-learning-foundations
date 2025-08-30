@@ -8,33 +8,27 @@
 import SwiftUI
 
 struct DetailView: View {
-    //var habit = Habits()
-    var habit = [Habit]()
+    // A DetailView mostra um hábito, então ela só precisa de um item (Habit), não da coleção inteira. Se passassemos o Habits, teria que também dizer qual item dentro da coleção abrir — o que complicaria e deixaria a DetailView menos reutilizável.
+    @Binding var habit: Habit
 
     var body: some View {
         NavigationStack {
-            ForEach(habit, id: \.name) { i in //habit.habits
-                VStack {
-                    Text("\(i.name)")
-                        .font(.title)
-                        .padding(.top)
-                    
-                    Spacer()
-                    
-                    Text("\(i.description)")
-                    
-                    Spacer()
-                }
-            }
-            
+
             VStack {
+                Text("\(habit.name)")
+                    .font(.title)
+                    .padding(.top)
+                
+                Spacer()
+                
+                Text("\(habit.description)")
+                Text("\(habit.registerCount)")
+                
                 Spacer()
                 
                 Button("Register activity") {
-                    
+                    habit.registerCount += 1
                 }
-                
-                Spacer()
             }
         }
     }
@@ -42,5 +36,5 @@ struct DetailView: View {
 
 #Preview {
 //    DetailView(habit: Habits())
-    DetailView(habit: [Habit(name: "Teste", description: "Testetstetse")])
+    DetailView(habit: .constant(Habit(name: "Teste", description: "Teste", registerCount: 3)))
 }

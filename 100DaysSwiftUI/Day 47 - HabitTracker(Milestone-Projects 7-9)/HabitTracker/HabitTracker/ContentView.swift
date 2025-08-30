@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-struct Habit {
+struct Habit: Identifiable {
+    var id = UUID()
     var name: String
     var description: String
+    var registerCount: Int
 }
 
 @Observable
@@ -22,21 +24,19 @@ class Habits {
 }
 
 struct ContentView: View {
-    @Environment(\.dismiss) var dismiss
-    @State private var habitTracker = Habits()
-    @State private var name = ""
-    @State private var description = ""
+    @State var habitTracker = Habits()
     @State private var isShowingNewHabit = false
     var body: some View {
         NavigationStack {
             List {
-                ForEach(habitTracker.habits, id: \.name) { i in
+                ForEach($habitTracker.habits) { $i in
                     NavigationLink {
-                        //DetailView(habit: habitTracker)
+                        DetailView(habit: $i)
                     } label: {
                         VStack (alignment: .leading) {
                             Text("\(i.name)")
                             Text("\(i.description)")
+                            Text("\(i.registerCount)")
                         }
                     }
                 }
