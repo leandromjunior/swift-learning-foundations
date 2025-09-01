@@ -12,6 +12,8 @@ struct CheckoutView: View {
     
     @State private var confirmationMessage = ""
     @State private var showingConfirmation = false
+    @State private var failedMessage = ""
+    @State private var showingFailed = false
     
     var body: some View {
         NavigationStack {
@@ -44,6 +46,12 @@ struct CheckoutView: View {
             } message: {
                 Text(confirmationMessage)
             }
+            // Day 52 - Challenge 2
+            .alert("Failed", isPresented: $showingFailed) {
+                Button("Try Again") { }
+            } message: {
+                Text(failedMessage)
+            }
         }
     }
     
@@ -65,6 +73,9 @@ struct CheckoutView: View {
             showingConfirmation = true
         } catch {
             print("Checkout failed: \(error.localizedDescription)")
+            //Day 52 - Challenge 2
+            failedMessage = "Unnable to place the order."
+            showingFailed = true
         }
     }
 }

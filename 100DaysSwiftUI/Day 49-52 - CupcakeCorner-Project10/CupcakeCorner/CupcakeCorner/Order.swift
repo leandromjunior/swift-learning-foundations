@@ -48,6 +48,20 @@ class Order: Codable {
         if name.isEmpty || streetAddress.isEmpty || city.isEmpty || zip.isEmpty {
             return false
         }
+        
+        // Day 52 - Challenge 1
+        /*
+         1- Our address fields are currently considered valid if they contain anything, even if it’s just only whitespace. Improve the validation to make sure a string of pure whitespace is invalid.
+         */
+        let nameTrimmed = name.trimmingCharacters(in: .whitespaces)
+        let streetAdressTrimmed = streetAddress.trimmingCharacters(in: .whitespaces)
+        let cityTrimmed = city.trimmingCharacters(in: .whitespaces)
+        let zipTrimmed = zip.trimmingCharacters(in: .whitespaces)
+        
+        if nameTrimmed.isEmpty || streetAdressTrimmed.isEmpty || cityTrimmed.isEmpty || zipTrimmed.isEmpty {
+            return false
+        }
+        
         return true
     }
     
