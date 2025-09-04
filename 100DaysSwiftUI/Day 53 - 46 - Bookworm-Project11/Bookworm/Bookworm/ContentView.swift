@@ -95,7 +95,20 @@ struct StudentView: View {
 // Day 54
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    @Query var books: [Book]
+    //@Query(sort: \Book.title) var books: [Book] // Ordena por titulo
+    //@Query(sort: \Book.rating, order: .reverse) var books: [Book] // Ordena pela nota maior e menor
+    
+    // The previous sort is good to use with a single field, but for two values or either one, we could use the SortDescriptor
+    //@Query(sort: [SortDescriptor(\Book.title)]) var books: [Book]
+    
+   // @Query(sort: [SortDescriptor(\Book.title, order: .reverse)]) var books: [Book]
+    
+    // Sorting for two values, in case of it has two books with the same title, the sort for author come in
+    @Query(sort: [
+        SortDescriptor(\Book.title),
+        SortDescriptor(\Book.author)
+    ]) var books: [Book]
+    
     @State private var showingAddScreen = false
     
     var body: some View {
@@ -116,9 +129,17 @@ struct ContentView: View {
                         }
                     }
                 }
+                .onDelete(perform: deleteBooks)
             }
             .navigationTitle("BookWorm")
+            .navigationDestination(for: Book.self) { book in
+                DetailView(book: book)
+            }
             .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showingAddScreen.toggle()
@@ -130,6 +151,15 @@ struct ContentView: View {
             .sheet(isPresented: $showingAddScreen) {
                 AddBookView()
             }
+        }
+    }
+    
+    func deleteBooks(at offsets: IndexSet) {
+        for offset in offsets {
+            // find this book in  the query
+            let book = books[offset]
+            // delete it from the context
+            modelContext.delete(book)
         }
     }
 }
