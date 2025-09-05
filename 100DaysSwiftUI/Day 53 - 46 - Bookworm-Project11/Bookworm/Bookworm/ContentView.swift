@@ -168,3 +168,8 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
+/*
+ Due to the challenge 2 of day 56, the line 126 was inserted
+ 2 - Modify ContentView so that books rated as 1 star are highlighted somehow, such as having their name shown in red.
+ */
