@@ -17,6 +17,13 @@ struct AddBookView: View {
     @State private var genre = "Fantasy"
     @State private var review = ""
     
+    var hasValidData: Bool {
+        if title.isEmpty || author.isEmpty {
+            return false
+        }
+        return true
+    }
+    
     let genres = ["Fantasy", "Horror", "Kids", "Mystery", "Poetry", "Romance"]
     var body: some View {
         NavigationStack {
@@ -46,6 +53,7 @@ struct AddBookView: View {
                         dismiss()
                         
                     }
+                    .disabled(hasValidData == false)
                 }
             }
             .navigationTitle("New Book")
@@ -56,3 +64,8 @@ struct AddBookView: View {
 #Preview {
     AddBookView()
 }
+
+/* The lines 20-26 and line 56 was inserted for te challenge 1 of day 56 as following:
+ 
+ 1- Right now it’s possible to select no title, author, or genre for books, which causes a problem for the detail view. Please fix this, either by forcing defaults, validating the form, or showing a default picture for unknown genres – you can choose.
+ */
