@@ -16,6 +16,7 @@ struct AddBookView: View {
     @State private var rating = 3
     @State private var genre = "Fantasy"
     @State private var review = ""
+    @State private var days = Date.now
     
     var hasValidData: Bool {
         if title.isEmpty || author.isEmpty {
@@ -37,6 +38,8 @@ struct AddBookView: View {
                             Text($0)
                         }
                     }
+                    
+                    DatePicker("Enter a date", selection: $days, displayedComponents: .date)
                 }
                 
                 Section("Write a review") {
@@ -47,7 +50,7 @@ struct AddBookView: View {
                 
                 Section {
                     Button("Save") {
-                        let newBook = Book(title: title, author: author, genre: genre, review: review, rating: rating)
+                        let newBook = Book(title: title, author: author, genre: genre, review: review, rating: rating, days: days)
                         modelContext.insert(newBook)
                         //try? modelContext.save()
                         dismiss()
