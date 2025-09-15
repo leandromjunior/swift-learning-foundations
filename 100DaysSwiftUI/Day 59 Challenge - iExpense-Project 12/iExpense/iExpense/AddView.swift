@@ -13,10 +13,10 @@ struct AddView: View {
     @Environment(\.dismiss) var dismiss
     
     @State private var name = ""
-    @State private var type = ""
+    @State private var type = "None"
     @State private var amount = 0.0
     
-    let types = ["Business", "Personal"]
+    let types = ["Business", "Personal", "None"]
     
     var body: some View {
         NavigationStack {

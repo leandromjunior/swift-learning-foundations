@@ -11,61 +11,63 @@ import SwiftData
 struct ContentView: View {
     
     @Environment(\.modelContext) var modelContext
+    
     @Query var expenses: [Expense]
-    @State private var showingAddExpense = false
+    
+    @State private var sortOrder = [
+        SortDescriptor(\Expense.name),
+        SortDescriptor(\Expense.amount),
+    ]
+
+    @State private var selectedType = ""
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(expenses) { expense in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 5) {
-                            Text(expense.name)
-                                .font(.headline)
+            ExpensesView(filterType: selectedType, sortOrder: sortOrder)
+                .navigationTitle("iExpense")
+                .toolbar {
+                    NavigationLink() {
+                        AddView()
+                            .navigationBarBackButtonHidden(true)
+                        
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                    
+                    Menu("Sort", systemImage: "arrow.up.arrow.down") {
+                        Picker("Sort", selection: $sortOrder) {
                             
-                            Text(expense.type)
+                            Text("Name")
+                                .tag([
+                                    SortDescriptor(\Expense.name),
+                                    SortDescriptor(\Expense.amount),
+                                ])
+                            
+                            Text("Amount")
+                                .tag([
+                                    SortDescriptor(\Expense.amount),
+                                    SortDescriptor(\Expense.name),
+                                ])
+                        }
+                    }
+                    
+                    Menu("Filter", systemImage: "line.horizontal.3.decrease.circle") {
+                        Button("Show All") {
+                            selectedType = ""
                         }
                         
-                        Spacer()
-                        
-                        if expense.amount == 0 {
-                            Text(expense.amount, format: .currency(code: "BRL"))
-                                .foregroundStyle(.green)
-                        } else if expense.amount < 10 {
-                            Text(expense.amount, format: .currency(code: "BRL"))
-                                .foregroundStyle(.yellow)
-                        } else if expense.amount < 100 {
-                            Text(expense.amount, format: .currency(code: "BRL"))
-                                .foregroundStyle(.orange)
-                        } else {
-                            Text(expense.amount, format: .currency(code: "BRL"))
-                                .foregroundStyle(.red)
+                        Button("Show Business") {
+                            selectedType = "Business"
                         }
-                            
+                        
+                        Button("Show Personal") {
+                            selectedType = "Personal"
+                        }
                     }
                 }
-                .onDelete(perform: removeItems)
-            }
-            .navigationTitle("iExpense")
-            .toolbar {
-                NavigationLink() {
-                    AddView()
-                        .navigationBarBackButtonHidden(true) //added this modifier to hide the default back button in the AddView and in the "AddView" view i created another toolbar with a cancel button and the dismiss environment method
-
-                } label: {
-                    Image(systemName: "plus")
-                }
             }
         }
     }
-    
-    func removeItems(at offsets: IndexSet) {
-        for offset in offsets {
-            let item = expenses[offset]
-            modelContext.delete(item)
-        }
-    }
-}
 
 #Preview {
     ContentView()
