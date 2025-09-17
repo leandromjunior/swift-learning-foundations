@@ -16,15 +16,25 @@ struct ContentView: View {
                 if isLoading {
                     ProgressView("Loading...")
                 } else {
-                    List(users) { user in
-                        VStack(alignment: .leading) {
-                            Text(user.name)
+                    List($users) { $user in
+                        NavigationLink {
+                            DetailView(user: $user)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text(user.name)
+                                    .font(.headline)
+                                
+                                Text(user.isActive ? "Active" : "Inactive")
+                                    .foregroundStyle(user.isActive ? .green : .red)
+                            }
                         }
                     }
                 }
             }
             .navigationTitle("Users")
             .task {
+                guard users.isEmpty else { return }
+                
                 await fetchData()
             }
         }
