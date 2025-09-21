@@ -1,0 +1,71 @@
+//
+//  ContentView.swift
+//  PeopleList
+//
+//  Created by Leandro Motta Junior on 15/09/25.
+//
+
+import SwiftUI
+import SwiftData
+
+struct ContentView: View {
+    @Environment(\.modelContext) var modelContext
+    @Query var users: [User]
+    @State private var isLoading = false
+    var body: some View {
+        NavigationStack {
+            VStack {
+                if isLoading {
+                    ProgressView("Loading...")
+                } else {
+                    List(users) { user in
+                        NavigationLink {
+                            DetailView(user: user)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                Text(user.name)
+                                    .font(.headline)
+                                
+                                Text(user.isActive ? "Active" : "Inactive")
+                                    .foregroundStyle(user.isActive ? .green : .red)
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Users")
+            .task {
+                guard users.isEmpty else { return }
+                
+                await fetchData()
+            }
+        }
+    }
+    
+    func fetchData() async {
+        isLoading = true
+        
+        let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "GET"
+        
+        do {
+            let(data, _) = try await URLSession.shared.data(for: request)
+            let decoded = try JSONDecoder().decode([User].self, from: data)
+            
+            for user in decoded {
+                modelContext.insert(user)
+            }
+            try modelContext.save()
+        } catch {
+            print("Failed loading the data \(error.localizedDescription)")
+        }
+        
+        isLoading = false
+    }
+}
+
+#Preview {
+    ContentView()
+}
