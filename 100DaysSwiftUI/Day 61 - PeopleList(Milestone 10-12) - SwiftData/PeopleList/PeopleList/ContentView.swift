@@ -45,7 +45,10 @@ struct ContentView: View {
     func fetchData() async {
         isLoading = true
         
-        let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
+        guard let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json") else {
+            print("Invalid URL")
+            return
+        }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "GET"
