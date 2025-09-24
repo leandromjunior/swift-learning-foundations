@@ -8,6 +8,7 @@
 import SwiftUI
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import PhotosUI
 
 // Day 62
 
@@ -151,6 +152,93 @@ struct AnotherWayShowingEmptyView: View {
     }
 }
 
+// Day 64
+
+// Loading photos from the user's photo library
+struct LoadingPhotosView: View {
+    @State private var pickerItem: PhotosPickerItem?
+    @State private var selectedImage: Image?
+    
+    var body: some View {
+        VStack {
+            PhotosPicker("Select a picture", selection: $pickerItem, matching: .images)
+            
+            selectedImage?
+                .resizable()
+                .scaledToFit()
+        }
+        .onChange(of: pickerItem) {
+            Task {
+                selectedImage = try await pickerItem?.loadTransferable(type: Image.self)
+            }
+        }
+    }
+}
+
+struct LoadingMoreThanOnePhoto: View {
+    @State private var pickerItems = [PhotosPickerItem]()
+    @State private var selectedImages = [Image]()
+    
+    var body: some View {
+        VStack {
+            // This line let the user select an image with no restriction
+            //PhotosPicker("Select Images", selection: $pickerItems, matching: .images)
+            
+            // This line restrict the user to change 3 photos at maximum
+            /*PhotosPicker(selection: $pickerItems, maxSelectionCount: 3, matching: .images) {
+                Label("Select a picture", systemImage: "photo")
+            } */
+            
+            // This line don't let the user choose a screenshot as image
+            PhotosPicker(selection: $pickerItems, maxSelectionCount: 3, matching: .any(of: [.images, .not(.screenshots)])) {
+                Label("Select a picture", systemImage: "photo")
+            }
+            
+            ScrollView {
+                ForEach(0..<selectedImages.count, id: \.self) { i in
+                    selectedImages[i]
+                        .resizable()
+                        .scaledToFit()
+                }
+            }
+        }
+        .onChange(of: pickerItems) {
+            Task {
+                selectedImages.removeAll()
+                
+                for item in pickerItems {
+                    if let loadedImage = try await item.loadTransferable(type: Image.self) {
+                        selectedImages.append(loadedImage)
+                    }
+                }
+            }
+        }
+    }
+}
+
+// How to let the user share content with ShareLink
+struct ShareLinkView: View {
+    var body: some View {
+        // Simple ShareLink
+        //ShareLink(item: URL(string: "https://www.google.com")!)
+        
+        // ShareLink with a subject
+        ShareLink(item: URL(string: "https://www.google.com")!, subject: Text("Search for anything here"), message: Text("Try searching for a subject that you love!"))
+        
+        // Customizing the button
+        ShareLink(item: URL(string: "https://www.google.com")!) {
+            Label("Let's make google search famous again", systemImage: "swift")
+        }
+        
+        //providing a preview inside the share button
+        let example = Image(.unnamed)
+        
+        ShareLink(item: example, preview: SharePreview("Singapore Airport", image: example)) {
+            Label("Click to share", systemImage: "airplane")
+        }
+    }
+}
+
 //App
 struct ContentView: View {
     var body: some View {
@@ -170,6 +258,9 @@ struct ContentView: View {
     //ConfirmationDialogView()
     //CoreImageView()
     //ShowingEmptyVIew()
-    AnotherWayShowingEmptyView()
+    //AnotherWayShowingEmptyView()
+    //LoadingPhotosView()
+    //LoadingMoreThanOnePhoto()
+    ShareLinkView()
     //ContentView()
 }
