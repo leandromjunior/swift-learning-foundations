@@ -20,4 +20,11 @@ struct User: Codable, Identifiable {
     var tags: [String]
     var friends: [Friend]
     
+    var initialsName: String {
+        let parts = name.split(separator: " ")
+        let firstLetter = parts.first?.first.map { String($0) } ?? ""
+        let lastLetter = parts.last?.first.map { String($0) } ?? ""
+        return firstLetter + lastLetter
+    }
+    
 }

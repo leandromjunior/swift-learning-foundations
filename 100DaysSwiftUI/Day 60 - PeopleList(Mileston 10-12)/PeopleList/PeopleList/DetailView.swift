@@ -13,9 +13,17 @@ struct DetailView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(spacing: 20) {
-                    Text(user.isActive ? "Active" : "Inactive")
-                        .foregroundStyle(user.isActive ? .green : .red)
-                        .font(.headline)
+                    Text(user.initialsName)
+                        .font(.system(size: 73).bold())
+                        .background(.gray)
+                        .clipShape(.circle)
+                        .overlay(
+                            Circle()
+                                .strokeBorder(user.isActive ? .green : .red, lineWidth: 4)
+                                .frame(width: 95, height: 95)
+                                
+                        )
+                        .padding(.top)
                     Text(user.about)
                     
                     HStack {
@@ -41,5 +49,5 @@ struct DetailView: View {
 }
 
 #Preview {
-    DetailView(user: .constant(User(id: "12", isActive: true, name: "Caio Alfredo", age: 32, company: "Meta", email: "teste@gmail.com", address: "Rua oscorp", about: "Like video games", registered: "1234", tags: ["video", "games"], friends: [Friend(id: "2", name: "Junior")])))
+    DetailView(user: .constant(User(id: "12", isActive: false, name: "Caio Alfredo", age: 32, company: "Meta", email: "teste@gmail.com", address: "Rua oscorp", about: "Like video games", registered: "1234", tags: ["video", "games"], friends: [Friend(id: "2", name: "Junior")])))
 }
