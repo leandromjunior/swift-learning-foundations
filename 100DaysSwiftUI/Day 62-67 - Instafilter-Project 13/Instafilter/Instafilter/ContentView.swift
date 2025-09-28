@@ -244,6 +244,7 @@ struct ShareLinkView: View {
 struct ContentView: View {
     @State private var processedImage: Image?
     @State private var filterIntensity = 0.5
+    @State private var filterRadius = 0.5
     
     @State private var selectedItem: PhotosPickerItem? //optional because we don't have a value to display by default
     
@@ -275,18 +276,25 @@ struct ContentView: View {
                 Spacer()
                 
                 HStack {
-                    Text("Intensity")
-                    Slider(value: $filterIntensity)
-                        .onChange(of: filterIntensity, applyProcessing)
+                    //With the inclusion of this condition asked in the challenge 1, the slider will be shown only if there is a image selected
+                    if processedImage != nil {
+                        Text("Intensity")
+                        Slider(value: $filterIntensity)
+                            .onChange(of: filterIntensity, applyProcessing)
+                        
+                        Text("Radius")
+                        Slider(value: $filterRadius)
+                            .onChange(of: filterRadius, applyProcessing)
+                    }
                 }
                 .padding(.vertical)
                 
                 HStack {
-                    Button("Change Filter", action: changeFilter)
-                    
-                    Spacer()
-                    
                     if let processedImage {
+                        Button("Change Filter", action: changeFilter)
+                        
+                        Spacer()
+                        
                         ShareLink(item: processedImage, preview: SharePreview("Instafilter image", image: processedImage))
                     }
                 }
@@ -301,6 +309,7 @@ struct ContentView: View {
                 Button("Sepia Tone") { setFilter(CIFilter.sepiaTone()) }
                 Button("Unsharp Mask") { setFilter(CIFilter.unsharpMask()) }
                 Button("Vignette") { setFilter(CIFilter.vignette()) }
+                Button("Distortion") { setFilter(CIFilter.bumpDistortion()) }
                 Button("Cancel", role: .cancel) { }
             }
         }
@@ -308,7 +317,6 @@ struct ContentView: View {
     
     func changeFilter() {
         showingFilter = true
-        
     }
     
     func loadImage() {
@@ -326,8 +334,8 @@ struct ContentView: View {
         let inputKeys = currentFilter.inputKeys
         
         if inputKeys.contains(kCIInputIntensityKey) { currentFilter.setValue(filterIntensity, forKey: kCIInputIntensityKey) }
-        if inputKeys.contains(kCIInputRadiusKey) { currentFilter.setValue(filterIntensity, forKey: kCIInputRadiusKey) }
-        if inputKeys.contains(kCIInputScaleKey) { currentFilter.setValue(filterIntensity, forKey: kCIInputScaleKey)}
+        if inputKeys.contains(kCIInputRadiusKey) { currentFilter.setValue(filterRadius * 200, forKey: kCIInputRadiusKey) }
+        if inputKeys.contains(kCIInputScaleKey) { currentFilter.setValue(filterIntensity * 10, forKey: kCIInputScaleKey)}
         
         guard let outputImage = currentFilter.outputImage else { return }
         guard let cgImage = context.createCGImage(outputImage, from: outputImage.extent) else { return }
