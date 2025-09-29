@@ -27,7 +27,7 @@ struct DetailView: View {
                         Text(user.initialsName)
                             .font(.system(size: 55).bold())
                             .fontDesign(.monospaced)
-                            .frame(width: 90, height: 90)
+                            .frame(width: 90, height: 90) //inner circle background resize
                             .background(.gray)
                             .clipShape(.circle)
                             .overlay(
