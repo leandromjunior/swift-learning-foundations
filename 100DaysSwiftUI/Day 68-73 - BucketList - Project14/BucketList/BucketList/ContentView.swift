@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import MapKit
+import LocalAuthentication
 
 // Adding conformance to Comparable for custom types
 
@@ -16,7 +18,7 @@ struct User: Identifiable, Comparable {
     var lastName: String
     
     static func <(lhs: User, rhs: User) -> Bool {
-        lhs.lastName < rhs.firstName
+        lhs.lastName < rhs.lastName
     }
 }
 struct ComparableView: View {
@@ -99,6 +101,171 @@ struct ViewsWithEnumsView: View {
     }
 }
 
+// Day 69
+
+// Integrating MapKit with SwiftUI
+struct MapsView: View {
+    var body: some View {
+        Map()
+            //.mapStyle(.imagery) //Show satellite map
+            //.mapStyle(.hybrid) //Show satellite map with city map when zooming
+            .mapStyle(.hybrid(elevation: .realistic)) //Show the globe with real time zone
+    }
+}
+
+struct MapInteractionView: View {
+    var body: some View {
+        //Map(interactionModes: [.rotate, .zoom]) //let the user rotate and zoom the map
+        Map(interactionModes: []) //Don't let the user interact with the map, it's a static image
+    }
+}
+
+struct MapInitialPositionView: View {
+    let position = MapCameraPosition.region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 51.507222, longitude: -0.1275), span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+        )
+    )
+    var body: some View {
+        Map(initialPosition: position)
+    }
+}
+
+struct MapChangePositionView: View {
+    @State private var position = MapCameraPosition.region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 38.897957, longitude: -77.036560), span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+        )
+    )
+    var body: some View {
+        VStack {
+            Map(position: $position)
+//                .onMapCameraChange { context in
+//                    print(context.region)
+//                }
+            // With the .continuous value the value of position changes while the user is moving the map and not only when he stops moving
+                .onMapCameraChange(frequency: .continuous) { context in
+                    print(context.region)
+                }
+            
+            HStack(spacing: 50) {
+                Button("Paris") {
+                    position = MapCameraPosition.region(
+                        MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: 48.8566, longitude: 2.3522), span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+                        )
+                    )
+                }
+                
+                Button("Tokyo") {
+                    position = MapCameraPosition.region(
+                        MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: 35.6897, longitude: 139.6922), span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+                        )
+                    )
+                }
+            }
+        }
+    }
+}
+
+struct Location: Identifiable {
+    let id = UUID()
+    var name: String
+    var coordinate: CLLocationCoordinate2D
+}
+
+struct PlacingMarkerView: View {
+    let locations = [
+        Location(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
+        Location(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
+    ]
+    
+    var body: some View {
+        Map {
+            ForEach(locations) { location in
+                Marker(location.name, coordinate: location.coordinate)
+            }
+        }
+    }
+}
+
+struct PlacingAnnotationsView: View {
+    let locations = [
+        Location(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
+        Location(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
+    ]
+    
+    var body: some View {
+        Map {
+            ForEach(locations) { location in
+                Annotation(location.name, coordinate: location.coordinate) {
+                    Text(location.name)
+                        .font(.headline)
+                        .padding()
+                        .background(.blue)
+                        .foregroundStyle(.white)
+                        .clipShape(.capsule)
+                }
+                .annotationTitles(.hidden)
+            }
+        }
+    }
+}
+
+struct OnTapMapView: View {
+    var body: some View {
+        // It marks the location/coordinates from the local where the user tapped
+        MapReader { proxy in
+            Map()
+                .onTapGesture { position in
+                    if let coordinate = proxy.convert(position, from: .local) {
+                        print(coordinate)
+                    }
+                }
+        }
+    }
+}
+
+// Using Touch ID and Face ID with SwiftUI
+struct BiometricAuthenticationView: View {
+    @State private var isUnlocked = false
+    var body: some View {
+        VStack {
+            if isUnlocked {
+                Text("Unlocked")
+            } else {
+                Text("Locked")
+            }
+        }
+        .onAppear(perform: authenticate)
+    }
+    
+    func authenticate() {
+        let context = LAContext()
+        var error: NSError?
+        
+        // check whether biometric authentication is possible
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            // it's possible, so go ahead and use it
+            let reason = "We need to unlock your data."
+            
+            context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, authenticationError in
+                
+                // authentication has now completed
+                if success {
+                    // authenticated successfully
+                    isUnlocked = true
+                } else {
+                    // there was a problem
+                }
+            }
+        } else {
+            // no biometrics
+        }
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         VStack {
@@ -114,6 +281,18 @@ struct ContentView: View {
 #Preview {
     //ComparableView()
     //WritingDataToDocumentView()
-    ViewsWithEnumsView()
+    //ViewsWithEnumsView()
+    //MapsView()
+    //MapInteractionView()
+    //MapInitialPositionView()
+    //MapChangePositionView()
+    //PlacingMarkerView()
+    //PlacingAnnotationsView()
+    //OnTapMapView()
+    BiometricAuthenticationView()
     //ContentView()
 }
+
+/*
+ Obs. for BiometricAuthenticationView() - To take Face ID for a test drive in the simulator, go to the Features menu and choose Face ID > Enrolled, then launch the app again. This time you should see the Face ID prompt appear, and you can trigger successful or failed authentication by going back to the Features menu and choosing Face ID > Matching Face or Non-matching Face.
+ */
