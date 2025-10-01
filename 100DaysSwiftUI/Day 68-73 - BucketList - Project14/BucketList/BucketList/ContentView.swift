@@ -169,7 +169,7 @@ struct MapChangePositionView: View {
     }
 }
 
-struct Location: Identifiable {
+struct LocationExample: Identifiable {
     let id = UUID()
     var name: String
     var coordinate: CLLocationCoordinate2D
@@ -177,8 +177,8 @@ struct Location: Identifiable {
 
 struct PlacingMarkerView: View {
     let locations = [
-        Location(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
-        Location(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
+        LocationExample(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
+        LocationExample(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
     ]
     
     var body: some View {
@@ -192,8 +192,8 @@ struct PlacingMarkerView: View {
 
 struct PlacingAnnotationsView: View {
     let locations = [
-        Location(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
-        Location(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
+        LocationExample(name: "Buckingham Palace", coordinate: CLLocationCoordinate2D(latitude: 51.501, longitude: -0.141)),
+        LocationExample(name: "Tower of London", coordinate: CLLocationCoordinate2D(latitude: 51.508, longitude: -0.076))
     ]
     
     var body: some View {
@@ -215,7 +215,7 @@ struct PlacingAnnotationsView: View {
 
 struct OnTapMapView: View {
     var body: some View {
-        // It marks the location/coordinates from the local where the user tapped
+        // It marks the location/coordinates from the local where the user tapped. The tap location is not ideal because it gives us screen coordinates rather than map coordinates. But using MapReader we can convert between the two types of coordinates (lat, lon)
         MapReader { proxy in
             Map()
                 .onTapGesture { position in
@@ -267,14 +267,43 @@ struct BiometricAuthenticationView: View {
 }
 
 struct ContentView: View {
+    let startPosition = MapCameraPosition.region(
+        MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 56, longitude: -3), span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 10)
+        )
+    )
+    @State private var locations = [Location]()
+    @State private var selectedPlace: Location? // we might have a selected location or we might not
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        MapReader { proxy in
+            Map(initialPosition: startPosition) {
+                ForEach(locations) { location in
+                    Annotation(location.name, coordinate: location.coordinate) {
+                        Image(systemName: "star.circle")
+                            .resizable()
+                            .foregroundStyle(.blue)
+                            .frame(width: 44, height: 44)
+                            .background(.white)
+                            .clipShape(.circle)
+                            .simultaneousGesture(LongPressGesture(minimumDuration: 1).onEnded { _ in selectedPlace = location })
+                    }
+                }
+            }
+            .onTapGesture { position in
+                if let coordinate = proxy.convert(position, from: .local) {
+                    let newLocation = Location(id: UUID(), name: "New Location", description: "", latitudade: coordinate.latitude, longitude: coordinate.longitude)
+                    locations.append(newLocation)
+                }
+            }
+            .sheet(item: $selectedPlace) { place in
+                EditView(location: place) { newLocation in
+                    if let index = locations.firstIndex(of: place) {
+                        locations[index] = newLocation
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
 
@@ -289,8 +318,8 @@ struct ContentView: View {
     //PlacingMarkerView()
     //PlacingAnnotationsView()
     //OnTapMapView()
-    BiometricAuthenticationView()
-    //ContentView()
+    //BiometricAuthenticationView()
+    ContentView()
 }
 
 /*
