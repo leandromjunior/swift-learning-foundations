@@ -89,6 +89,7 @@ struct EditView: View {
             let items = try JSONDecoder().decode(Result.self, from: data)
             
             pages = items.query.pages.values.sorted()
+            loadingState = .loaded
         } catch {
             loadingState = .failed
         }
