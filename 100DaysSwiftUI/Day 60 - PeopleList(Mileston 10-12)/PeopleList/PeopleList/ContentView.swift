@@ -16,9 +16,9 @@ struct ContentView: View {
                 if isLoading {
                     ProgressView("Loading...")
                 } else {
-                    List($users) { $user in
+                    List(users) { user in
                         NavigationLink {
-                            DetailView(user: $user)
+                            DetailView(user: user)
                         } label: {
                             VStack(alignment: .leading) {
                                 Text(user.name)
@@ -43,7 +43,10 @@ struct ContentView: View {
     func fetchData() async {
         isLoading = true
         
-        let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json")!
+        guard let url = URL(string: "https://www.hackingwithswift.com/samples/friendface.json") else {
+            print("Error in URL")
+            return
+        }
         var request = URLRequest(url: url)
         request.setValue("aplication/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "GET"

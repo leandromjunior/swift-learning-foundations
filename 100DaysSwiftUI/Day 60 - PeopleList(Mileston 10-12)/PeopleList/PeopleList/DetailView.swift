@@ -18,7 +18,7 @@ struct LineDivider: View {
 }
 
 struct DetailView: View {
-    @Binding var user: User
+    let user: User
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -82,5 +82,10 @@ struct DetailView: View {
 }
 
 #Preview {
-    DetailView(user: .constant(User(id: "12", isActive: true, name: "Caio Alfredo", age: 32, company: "Meta", email: "teste@gmail.com", address: "Rua oscorp", about: "Like video games", registered: "1234", tags: ["video", "games"], friends: [Friend(id: "2", name: "Junior")])))
+    // In case of @Binding we need to use a line as the 86
+//    DetailView(user: .constant(User(id: "12", isActive: true, name: "Caio Alfredo", age: 32, company: "Meta", email: "teste@gmail.com", address: "Rua oscorp", about: "Like video games", registered: "1234", tags: ["video", "games"], friends: [Friend(id: "2", name: "Junior")])))
+    
+    DetailView(user: User(id: "12", isActive: true, name: "Caio Alfredo", age: 32, company: "Meta", email: "teste@gmail.com", address: "Rua Oscorp", about: "Like video games", registered: "1234", tags: ["video", "games"], friends: [Friend(id: "2", name: "Junior")]))
 }
+
+// The DetailView does not modify any value, so it doesn't need to be @Binding, only let because the view only read
