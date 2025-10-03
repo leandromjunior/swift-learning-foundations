@@ -62,7 +62,7 @@ struct DetailView: View {
                     LineDivider()
                     
                     Text(user.about)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .frame(maxWidth: .infinity, alignment: .center)
                         .padding(.horizontal)
                     
                     LineDivider()
