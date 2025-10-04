@@ -15,7 +15,8 @@ extension ContentView {
     class ViewModel {
         private(set) var locations: [Location]
         var selectedPlace: Location? // we might have a selected location or we might not
-        var isUnlocked = false
+        var isUnlocked = true
+        var isHybridStyle = false
         
         let savePath = URL.documentsDirectory.appending(path: "SavedPlaces")
         
@@ -70,6 +71,10 @@ extension ContentView {
             } else {
                 // No biometrics
             }
+        }
+        
+        func changeMap() {
+            isHybridStyle.toggle()
         }
     }
 }
