@@ -363,6 +363,162 @@ struct WordScrambleChallengeView: View {
     }
 }
 
+struct AccessibilityChangesView: View {
+    @State private var useWords = [String]()
+    @State private var rootWords = ""
+    @State private var newWord = ""
+    
+    @State private var errorTitle = ""
+    @State private var errorMessage = ""
+    @State private var showingError = false
+    
+    @State private var score = 0
+    
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                List {
+                    Section {
+                        TextField("Enter a word", text: $newWord)
+                            .textInputAutocapitalization(.never)
+                    }
+                    
+                    Section {
+                        ForEach(useWords, id: \.self) {word in
+                            HStack {
+                                //Add a little circle with the number of letters of the typed word
+                                Image(systemName: "\(word.count).circle")
+                                Text(word)
+                            }
+                            .accessibilityElement()
+                            .accessibilityLabel("\(word), \(word.count) letters")
+                        }
+                    }
+                }
+                .navigationTitle(rootWords)
+                .onSubmit(addNewWord)
+                .onAppear(perform: startGame)
+                .alert(errorTitle, isPresented: $showingError) {
+                    Button("OK") { }
+                } message: {
+                    Text(errorMessage)
+                }
+                .toolbar {
+                    Button("Reset", action: startGame)
+                }
+                
+                VStack {
+                    Text("Score: \(score)")
+                        .font(.title.bold())
+                        .foregroundStyle(.blue)
+                }
+            }
+        }
+    }
+    
+    func addNewWord() {
+        // lowercase and trim(removing spaces) the word to make sure we don't add duplicates words with case differences
+        let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        var numWord: Int
+        
+        // exit if the remaining string is empty
+        guard answer.count > 0 else { return }
+        
+        guard isOriginal(word: answer) else {
+            wordError(title: "Word used already!", message: "Be more original")
+            return
+        }
+        
+        guard isPossible(word: answer) else {
+            wordError(title: "Word not possible", message: "You can't spell this word from \(rootWords)")
+            return
+        }
+        
+        guard isReal(word: answer) else {
+            wordError(title: "Word not recognized", message: "You can't just make them up, you know")
+            return
+        }
+        
+        guard isBigEnough(word: answer) else {
+            wordError(title: "Invalid word", message: "Try another bigger word or any different from the start word")
+            return
+        }
+        
+        withAnimation {
+            useWords.insert(answer, at: 0)
+        }
+        newWord = ""
+        
+        numWord = useWords.count
+        score += answer.count
+        
+        if numWord == 2 {
+            score += 20
+            numWord = 0
+        }
+        
+    }
+    
+    func startGame() {
+        score = 0
+        // Find the url for start.txt in app bundle
+        if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
+            //Load start.txt into a string
+            if let startWords = try? String(contentsOf: startWordsURL) {
+                // Split the string up into an array of strings, splitting on line breaks
+                let allWords = startWords.components(separatedBy: "\n")
+                // Pick one random word, or use "silkworm" as a sensible default
+                rootWords = allWords.randomElement() ?? "silkworm"
+                // If we are here everything has worked, so we can exit
+                return
+            }
+        }
+        // If were are *here* then there was a problem – trigger a crash and report the error
+        fatalError("Could not load start.txt from Bundle.")
+    }
+    
+    func isOriginal(word: String) -> Bool {
+        !useWords.contains(word)
+    }
+    
+    func isPossible(word: String) -> Bool {
+        var tempWord = rootWords
+        
+        for letter in word {
+            if let pos = tempWord.firstIndex(of: letter) {
+                tempWord.remove(at: pos)
+            } else {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func isReal(word: String) -> Bool {
+        let checker = UITextChecker()
+        let range = NSRange(location: 0, length: word.utf16.count)
+        let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
+        
+        return misspelledRange.location == NSNotFound
+    }
+    
+    func isBigEnough(word: String) -> Bool {
+        
+        if word.count < 3 || word == rootWords {
+            return false
+        }
+        
+        return true
+    }
+    
+    func wordError(title: String, message: String) {
+        errorTitle = title
+        errorMessage = message
+        showingError = true
+    }
+}
+
 #Preview {
-    WordScrambleChallengeView()
+    //WordScrambleChallengeView()
+    AccessibilityChangesView()
 }
