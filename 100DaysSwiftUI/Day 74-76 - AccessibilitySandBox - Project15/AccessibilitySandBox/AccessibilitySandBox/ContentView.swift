@@ -92,6 +92,16 @@ struct ReadingValueOfControls: View {
     }
 }
 
+// Handling voice input in SwiftUI
+struct VoiceInput: View {
+    var body: some View {
+        Button("John Fitzgerald Kennedy") {
+            print("Tapped")
+        }
+        .accessibilityInputLabels(["John Fitzgerald Kennedy", "Kennedy", "JFK"])
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         VStack {
@@ -109,6 +119,7 @@ struct ContentView: View {
     //IdentifyingViews()
     //HidingAndGroupingAccessibilityData()
     //HidingAndGroupingAccessibilityData2()
-    ReadingValueOfControls()
+    //ReadingValueOfControls()
+    VoiceInput()
     //ContentView()
 }
