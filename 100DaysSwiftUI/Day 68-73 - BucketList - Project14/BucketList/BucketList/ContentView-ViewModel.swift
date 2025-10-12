@@ -65,11 +65,16 @@ extension ContentView {
                     if success {
                         self.isUnlocked = true
                     } else {
-                        //error
+                        if let authenticationError = authenticationError {
+                            print("Authentication failed \(authenticationError.localizedDescription)")
+                        }
                     }
                 }
             } else {
                 // No biometrics
+                if let error = error {
+                    print("No Biometric Authentication \(error.localizedDescription)")
+                }
             }
         }
         
