@@ -8,11 +8,26 @@
 import SwiftUI
 
 struct AddView: View {
+    @Environment(\.dismiss) var dismiss
+    @State private var name = ""
+    var onSave: (String) -> Void
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            Form {
+                TextField("Name the picture", text: $name)
+            }
+            .navigationTitle("Relate a Name")
+            .toolbar {
+                Button("Save") {
+                    onSave(name)
+                    dismiss()
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    AddView()
+    AddView() { _ in }
 }

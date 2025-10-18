@@ -7,10 +7,8 @@
 
 import Foundation
 
-struct People: Identifiable {
-    var id: UUID
+struct Person: Identifiable, Codable {
+    var id = UUID()
     var name: String
     var imageFileName: String
-    
-    static let example = People(id: UUID(), name: "Teste", imageFileName: "123.jpg")
 }
