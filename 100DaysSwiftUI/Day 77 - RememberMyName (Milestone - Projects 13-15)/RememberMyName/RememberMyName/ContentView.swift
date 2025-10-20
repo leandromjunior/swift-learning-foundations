@@ -20,8 +20,19 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            List(1..<3) { row in
-                Text("\(row)")
+            List(people.sorted()) { person in
+                
+                HStack {
+                    if let image = loadImage(for: person) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 50, height: 50)
+                    }
+                    
+                    Text("\(person.name)")
+                        .padding(.leading)
+                }
             }
             .navigationTitle("People")
             .toolbar {
@@ -29,13 +40,16 @@ struct ContentView: View {
                     Button("New Photo", systemImage: "plus") { }
                 }
             }
+            .onAppear {
+                people = loadPeople()
+            }
         }
         .onChange(of: pickerItem) {
             Task {
                 if let data = try await pickerItem?.loadTransferable(type: Data.self),
                    let uiImage = UIImage(data: data) {
                     selectedImage = uiImage
-                    hasImage()
+                    hasSelectedImage = true
                 }
             }
         }
@@ -43,12 +57,6 @@ struct ContentView: View {
             AddView { name in
                 addPeople(name: name)
             }
-        }
-    }
-    
-    func hasImage() {
-        if selectedImage != nil {
-            hasSelectedImage = true
         }
     }
     
@@ -77,6 +85,23 @@ struct ContentView: View {
         people.append(newPerson)
         
         save()
+        
+        selectedImage = nil
+        pickerItem = nil
+    }
+    
+    func loadPeople() -> [Person] {
+        do {
+            let data = try Data(contentsOf: savePath)
+            return try JSONDecoder().decode([Person].self, from: data)
+        } catch {
+            return []
+        }
+    }
+    
+    func loadImage(for person: Person) -> UIImage? {
+        let imagePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(person.imageFileName)
+        return UIImage(contentsOfFile: imagePath.path)
     }
 }
 

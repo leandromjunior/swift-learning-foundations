@@ -7,8 +7,12 @@
 
 import Foundation
 
-struct Person: Identifiable, Codable {
+struct Person: Identifiable, Codable, Comparable {
     var id = UUID()
     var name: String
     var imageFileName: String
+    
+    static func <(lhs: Person, rhs: Person) -> Bool {
+        lhs.name < rhs.name
+    }
 }
