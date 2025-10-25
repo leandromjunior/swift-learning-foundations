@@ -142,6 +142,78 @@ struct ContextMenus: View {
     }
 }
 
+// Adding custom row swipe actions to a list
+struct AddingSwipeActions: View {
+    var body: some View {
+        List {
+            Text("Taylor Swift")
+                .swipeActions {
+                    Button("Delete", systemImage: "minus.circle", role: .destructive) {
+                        print("Delete")
+                    }
+                }
+                .swipeActions(edge: .leading) {
+                    Button("Pin", systemImage: "pin") {
+                        print("Pinning")
+                    }
+                    .tint(.orange)
+                }
+        }
+    }
+}
+
+// Scheduling local notificationa
+import UserNotifications
+
+struct SchedulingNotifications: View {
+    var body: some View {
+        VStack {
+            Button("Request Permission") {
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                    if success {
+                        print("All set!")
+                    } else if let error {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
+            
+            Button("Schedule Notification") {
+                let content = UNMutableNotificationContent()
+                content.title = "Feed the cat"
+                content.subtitle = "It looks hungry"
+                content.sound = UNNotificationSound.default
+                
+                //Show this notification five seconds from now
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+                
+                // Choose a random identifier
+                let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+                
+                //Add our notification request
+                UNUserNotificationCenter.current().add(request)
+            }
+        }
+    }
+}
+
+// Adding Swift package dependencies in XCode
+// File > Add Package Dependencies > search for the package "https://github.com/twostraws/SamplePackage" and Add.
+
+import SamplePackage
+
+struct AddDependencies: View {
+    let possibleNumbers = 1...60
+    var results: String {
+        let selected = possibleNumbers.random(7).sorted()
+        let strings = selected.map(String.init)
+        return strings.formatted()
+    }
+    var body: some View {
+        Text(results)
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         VStack {
@@ -159,6 +231,9 @@ struct ContentView: View {
     //Tabs()
     //ResultType()
     //ImageInterpolation()
-    ContextMenus()
+    //ContextMenus()
+    //AddingSwipeActions()
+    //SchedulingNotifications()
+    AddDependencies()
     //ContentView()
 }
