@@ -14,6 +14,11 @@ struct ProspectView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Prospect.name) var prospects: [Prospect]
     
+    @State private var sortOrder = [
+        SortDescriptor(\Prospect.name),
+        SortDescriptor(\Prospect.emailAdress)
+    ]
+    
     enum FilterType {
         case none, contacted, uncontacted
     }
@@ -36,11 +41,25 @@ struct ProspectView: View {
     var body: some View {
         NavigationStack {
             List(prospects, selection: $selectedProspects) { prospect in
-                VStack(alignment: .leading) {
-                    Text(prospect.name)
-                        .font(.headline)
-                    Text(prospect.emailAdress)
-                        .foregroundStyle(.secondary)
+                NavigationLink {
+                    EditView(prospect: prospect)
+                } label: {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Text(prospect.name)
+                                .font(.headline)
+                            if prospect.isContacted == false {
+                                Image(systemName: "person.crop.circle")
+                                    .foregroundColor(.orange)
+                            }
+                            else {
+                                Image(systemName: "person.crop.circle.fill")
+                                    .foregroundColor(.green)
+                            }
+                        }
+                        Text(prospect.emailAdress)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 .swipeActions {
                     Button("Delete", systemImage: "trash", role: .destructive) {
@@ -81,6 +100,24 @@ struct ProspectView: View {
                 if selectedProspects.isEmpty == false {
                     ToolbarItem(placement: .bottomBar) {
                         Button("Delete Selected", action: delete)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu("Sort", systemImage: "arrow.up.arrow.down") {
+                        Picker("Sort", selection: $sortOrder) {
+                            Text("By Name")
+                                .tag([
+                                    SortDescriptor(\Prospect.name),
+                                    SortDescriptor(\Prospect.dateAdded)
+                                ])
+                            
+                            Text("By Email")
+                                .tag([
+                                    SortDescriptor(\Prospect.emailAdress),
+                                    SortDescriptor(\Prospect.name)
+                                ])
+                        }
                     }
                 }
             }
