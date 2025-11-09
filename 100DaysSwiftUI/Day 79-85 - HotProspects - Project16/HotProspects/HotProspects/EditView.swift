@@ -23,7 +23,7 @@ struct EditView: View {
     do {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Prospect.self, configurations: config)
-        let prospect = Prospect(name: "Teste", emailAdress: "teste@teste.com", isContacted: true)
+        let prospect = Prospect(name: "Teste", emailAdress: "teste@teste.com", isContacted: true, dateAdded: .now)
         return EditView(prospect: prospect)
             .modelContainer(container)
     } catch {

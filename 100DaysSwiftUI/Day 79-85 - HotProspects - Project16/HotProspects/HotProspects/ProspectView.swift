@@ -13,11 +13,9 @@ import UserNotifications
 struct ProspectView: View {
     @Environment(\.modelContext) var modelContext
     @Query(sort: \Prospect.name) var prospects: [Prospect]
-    
-    @State private var sortOrder = [
-        SortDescriptor(\Prospect.name),
-        SortDescriptor(\Prospect.emailAdress)
-    ]
+    @State private var isShowingScanner = false
+    @State private var selectedProspects = Set<Prospect>()
+    @State private var sortByName = true
     
     enum FilterType {
         case none, contacted, uncontacted
@@ -36,11 +34,17 @@ struct ProspectView: View {
         }
     }
     
-    @State private var isShowingScanner = false
-    @State private var selectedProspects = Set<Prospect>()
+    var sortedProspects: [Prospect] {
+        if sortByName {
+            return prospects.sorted(by: { $0.name < $1.name })
+        }
+        
+        return prospects.sorted(by: { $0.dateAdded > $1.dateAdded })
+    }
+    
     var body: some View {
         NavigationStack {
-            List(prospects, selection: $selectedProspects) { prospect in
+            List(sortedProspects, selection: $selectedProspects) { prospect in
                 NavigationLink {
                     EditView(prospect: prospect)
                 } label: {
@@ -49,11 +53,10 @@ struct ProspectView: View {
                             Text(prospect.name)
                                 .font(.headline)
                             if prospect.isContacted == false {
-                                Image(systemName: "person.crop.circle")
-                                    .foregroundColor(.orange)
+                                Image(systemName: "person.badge.plus")
                             }
                             else {
-                                Image(systemName: "person.crop.circle.fill")
+                                Image(systemName: "person.fill.checkmark")
                                     .foregroundColor(.green)
                             }
                         }
@@ -88,6 +91,24 @@ struct ProspectView: View {
             .navigationTitle(title)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    Menu("Sort", systemImage: "arrow.up.arrow.down") {
+//                        Button("Name") {
+//                            sortByName = true
+//                        }
+//                        Button("Most Recent") {
+//                            sortByName = false
+//                        }
+                        
+                        Picker("Sort", selection: $sortByName) {
+                            Text("Name")
+                                .tag(true)
+                            Text("Most Recent")
+                                .tag(false)
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
                     Button("scan", systemImage: "qrcode.viewfinder") {
                         isShowingScanner = true
                     }
@@ -100,24 +121,6 @@ struct ProspectView: View {
                 if selectedProspects.isEmpty == false {
                     ToolbarItem(placement: .bottomBar) {
                         Button("Delete Selected", action: delete)
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu("Sort", systemImage: "arrow.up.arrow.down") {
-                        Picker("Sort", selection: $sortOrder) {
-                            Text("By Name")
-                                .tag([
-                                    SortDescriptor(\Prospect.name),
-                                    SortDescriptor(\Prospect.dateAdded)
-                                ])
-                            
-                            Text("By Email")
-                                .tag([
-                                    SortDescriptor(\Prospect.emailAdress),
-                                    SortDescriptor(\Prospect.name)
-                                ])
-                        }
                     }
                 }
             }
@@ -147,7 +150,7 @@ struct ProspectView: View {
             let details = result.string.components(separatedBy: "\n")
             guard details.count == 2 else { return }
             
-            let person = Prospect(name: details[0], emailAdress: details[1], isContacted: false)
+            let person = Prospect(name: details[0], emailAdress: details[1], isContacted: false, dateAdded: .now)
             
             modelContext.insert(person)
             
