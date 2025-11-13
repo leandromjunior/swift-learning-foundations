@@ -207,6 +207,116 @@ struct DisablingInteractivity3: View {
     }
 }
 
+// Triggering events repeatdelly using a timer
+struct EventsTimer: View {
+    let timer = Timer.publish(every: 1, tolerance: 0.5, on: .main, in: .common).autoconnect()
+    @State private var counter = 0
+    var body: some View {
+        Text("Hello, World!")
+            .onReceive(timer) { time in
+                if counter == 5 {
+                    timer.upstream.connect().cancel() // Cancel the automatic timer
+                } else {
+                    print("The time is now \(time)") //print the .now time every 1 second
+                }
+                
+                counter += 1
+            }
+    }
+}
+
+// How to be notified when your SwiftUI app moves to the background
+struct BackgroundNotification: View {
+    @Environment(\.scenePhase) var scenePhase
+    
+    var body: some View {
+        Text("Hello")
+            .onChange(of: scenePhase) { oldPhase, newPhase in
+                if newPhase == .active { // The app is open
+                    print("Active")
+                } else if newPhase == .inactive { // The app is closed (the user get off the app)
+                    print("Inactive")
+                } else if newPhase == .background { // Runs right after the user get off the app
+                    print("Background")
+                }
+            }
+    }
+}
+
+// Supporting specific accessibility needs with SwiftUI
+
+// To run this code: open the simulator > Settings App > Accessibility > DIsplay & Text Size > Different Without Color toggle.
+struct SpecificAccessibilityColor: View {
+    @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
+    var body: some View {
+        HStack {
+            if differentiateWithoutColor {
+                Image(systemName: "checkmark.circle")
+            }
+            
+            Text("Success")
+        }
+        .padding()
+        .background(differentiateWithoutColor ? .black : .green)
+        .foregroundStyle(.white)
+        .clipShape(.capsule)
+    }
+}
+
+// To run this code: open the simulator > Settings App > Accessibility > Motion > Reduce Motion toggle.
+struct SpecificAccessibilityMotion: View {
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @State private var scale = 1.0
+    
+    var body: some View {
+        Button("Hello, World!") {
+            if reduceMotion {
+                scale *= 1.5
+            } else {
+                withAnimation {
+                    scale *= 1.5
+                }
+            }
+        }
+        .scaleEffect(scale)
+    }
+}
+
+// With this alternative we can create a little wrapper function that bypass animation automatically
+
+func withOptionalAnimation<Result>(_ animation: Animation? = .default, _ body: () throws -> Result) rethrows -> Result {
+    if UIAccessibility.isReduceMotionEnabled {
+        return try body()
+    } else {
+        return try withAnimation(animation, body)
+    }
+}
+
+struct SpecificAccessibilityMotionAlternative: View {
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @State private var scale = 1.0
+    
+    var body: some View {
+        Button("Hello, World!") {
+            withOptionalAnimation {
+                scale *= 1.5
+            }
+        }
+        .scaleEffect(scale)
+    }
+}
+
+struct SpecificAccessibilityTransparency: View {
+    @Environment(\.accessibilityReduceTransparency) var reduceTransparency
+    var body: some View {
+        Text("Hello, World!")
+            .padding()
+            .background(reduceTransparency ? .black : .black.opacity(0.5))
+            .foregroundStyle(.white)
+            .clipShape(.capsule)
+    }
+}
+
 struct ContentView: View {
     var body: some View {
         VStack {
@@ -227,6 +337,12 @@ struct ContentView: View {
     //sequentialGesture()
     //DisablingInteractivity()
     //DisablingInteractivity2()
-    DisablingInteractivity3()
+    //DisablingInteractivity3()
+    //EventsTimer()
+    //BackgroundNotification()
+    //SpecificAccessibilityColor()
+    //SpecificAccessibilityMotion()
+    SpecificAccessibilityMotionAlternative()
+    //SpecificAccessibilityTransparency()
     //ContentView()
 }
