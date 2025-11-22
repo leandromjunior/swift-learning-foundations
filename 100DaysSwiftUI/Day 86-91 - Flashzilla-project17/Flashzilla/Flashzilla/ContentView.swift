@@ -341,6 +341,8 @@ struct ContentView: View {
     
     @State private var showingEditScreen = false
     
+    @State private var offset = CGSize.zero
+    
     var body: some View {
         ZStack {
             Image(decorative: "background")// When using voiceOver this is the best approach instead of Image(.background)
@@ -356,8 +358,8 @@ struct ContentView: View {
                     .clipShape(.capsule)
                 
                 ZStack {
-                    ForEach(0..<cards.count, id: \.self) { index in
-                        CardView(card: cards[index]) {
+                    ForEach(Array(cards.enumerated()), id: \.element.id) { index, card in
+                        CardView(card: card) {
                             withAnimation {
                                 removeCard(at: index)
                             }
@@ -466,6 +468,14 @@ struct ContentView: View {
             isActive = false
         }
     }
+    
+    // Function to put the element at the last position in the array. IS NOT BEING USED RIGHT NOW
+    func moveCardToEnd(at index: Int) {
+        
+        let wrong = cards.remove(at: index)
+        cards.append(wrong)
+    }
+    
     // Executed when the button "Start Again" is pressed
     func resetCards() {
         // The line below was removed
