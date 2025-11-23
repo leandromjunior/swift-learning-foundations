@@ -20,32 +20,48 @@ struct AddView: View {
     
     var body: some View {
         NavigationStack {
-            Form {
-                TextField("Expense Name", text: $name)
-                
-                Picker("Type", selection: $type) {
-                    ForEach(types, id: \.self) {
-                        Text($0)
+            ZStack(alignment: .bottom) {
+                Form {
+                    TextField("Expense Name", text: $name)
+                        .keyboardType(.default)
+                    
+                    Picker("Type", selection: $type) {
+                        ForEach(types, id: \.self) {
+                            Text($0)
+                        }
+                    }
+                    
+                    TextField("Amount", value: $amount, format: .currency(code: "BRL"))
+                        .keyboardType(.decimalPad)
+                }
+                .navigationTitle("Add new Expense")
+                // The code below makes the button appear at the top right of the screen
+//                .toolbar {
+//                    Button("Save") {
+//                        let item = Expense(name: name, type: type, amount: amount)
+//                        modelContext.insert(item)
+//                        dismiss()
+//                    }
+//                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
                     }
                 }
-                
-                TextField("Amount", value: $amount, format: .currency(code: "BRL"))
-                    .keyboardType(.decimalPad)
-            }
-            .navigationTitle("Add new Expense")
-            .toolbar {
-                Button("Save") {
+                // This code makes the button appear as a component at the bottom of the screen
+                Button {
                     let item = Expense(name: name, type: type, amount: amount)
                     modelContext.insert(item)
                     dismiss()
+                } label: {
+                    Text("Save")
+                        .frame(maxWidth: .infinity) // Making the button edge to edge
                 }
-            }
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
+                .buttonStyle(.borderedProminent)
+                .padding(.horizontal, 10) // Giving the button distance from the side edges
+                .padding(.vertical, 30) // moving the button away from the bottom edge vertically
             }
         }
     }
