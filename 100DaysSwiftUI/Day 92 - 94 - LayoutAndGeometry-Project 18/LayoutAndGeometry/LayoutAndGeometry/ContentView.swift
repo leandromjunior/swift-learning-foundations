@@ -102,8 +102,105 @@ struct AbsolutePositioning: View {
         Text("Hello, World")
             .offset(x: 100, y: 100)
             .background(.red)
-            
-            
+    }
+}
+
+// Resizing images to fit the screen using GeometryReader
+struct ResizingImageWithGeometryReader: View {
+    var body: some View {
+//        GeometryReader { proxy in
+//            Image(.golden)
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: proxy.size.width * 0.8)
+//        }
+        
+        HStack {
+            Text("IMPORTANT")
+                .frame(width: 200)
+                .background(.blue)
+
+            GeometryReader { proxy in
+                Image(.golden)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: proxy.size.width * 0.8)
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+            }
+        }
+    }
+}
+
+// Understanding frames and coordinates inside GeometryReader
+
+struct OuterView: View {
+    var body: some View {
+        VStack {
+            Text("Top")
+            InnerView()
+                .background(.green)
+            Text("Bottom")
+        }
+    }
+}
+
+struct InnerView: View {
+    var body: some View {
+        HStack {
+            Text("Left")
+            GeometryReader { proxy in
+                Text("Center")
+                    .background(.blue)
+                    .onTapGesture {
+                        print("Global center: \(proxy.frame(in: .global).midX) x \(proxy.frame(in: .global).midY)")
+                        print("Custom Center: \(proxy.frame(in: .named("Custom")).midX) x \(proxy.frame(in: .named("Custom")).midY)")
+                        print("Local Center: \(proxy.frame(in: .local).midX) x \(proxy.frame(in: .local).midY)")
+                    }
+            }
+            .background(.orange)
+            Text("Right")
+        }
+    }
+}
+
+struct FramesAndCoordinates: View {
+    var body: some View {
+        // To uncomment the code below, comment the active code in this struct
+//        GeometryReader { proxy in
+//            Text("Hello, World!")
+//                .frame(width: proxy.size.width * 0.9)
+//                .background(.red)
+//        }
+//        
+//        Text("More Text")
+//            .background(.blue)
+        
+        OuterView()
+            .background(.red)
+            .coordinateSpace(name: "Custom")
+    }
+}
+
+// ScrollView effects using visualEffect() and scrollTargetBehavior()
+struct ScrollViewEffect: View {
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 0) {
+                ForEach(1..<20) { num in
+                    Text("Number \(num)")
+                        .font(.largeTitle)
+                        .padding()
+                        .background(.red)
+                        .frame(width: 200, height: 200)
+                        .visualEffect { content, proxy in
+                            content
+                                .rotation3DEffect(.degrees(-proxy.frame(in: .global).minX) / 8, axis: (x: 0, y: 1, z: 0))
+                        }
+                }
+            }
+            .scrollTargetLayout()
+        }
+        .scrollTargetBehavior(.viewAligned) // Makes the scroll stop in a view after a scroll gesture. If the user do not scroll enough the preview view stay at the same place.
     }
 }
 
@@ -124,6 +221,9 @@ struct ContentView: View {
     //AlignmentAndAlignmentGuides2()
     //AlignmentAndAlignmentGuides3()
     //CustomAlignment()
-    AbsolutePositioning()
+    //AbsolutePositioning()
+    //ResizingImageWithGeometryReader()
+    //FramesAndCoordinates()
+    ScrollViewEffect()
     //ContentView()
 }
