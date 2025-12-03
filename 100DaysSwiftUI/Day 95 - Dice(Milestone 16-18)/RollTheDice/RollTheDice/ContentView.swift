@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var numbers = Numbers()
     let faces = [4, 6, 8, 10, 20, 100]
     @State private var selectedFace = 4
     var body: some View {
@@ -25,6 +26,12 @@ struct ContentView: View {
                 
                 VStack {
                     Text("\(randomizeNumber(for: selectedFace))")
+                }
+                
+                HStack {
+                    ForEach($numbers.numbers) { $i in
+                        Text("\(i.number)")
+                    }
                 }
             }
         }
