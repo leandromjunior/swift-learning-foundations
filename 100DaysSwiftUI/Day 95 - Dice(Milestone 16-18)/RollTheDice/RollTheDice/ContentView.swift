@@ -11,6 +11,7 @@ struct ContentView: View {
     @State private var numbers = Numbers()
     let faces = [4, 6, 8, 10, 20, 100]
     @State private var selectedFace = 4
+    @State private var isPressed = false
     var body: some View {
         NavigationStack {
             ZStack {
@@ -25,7 +26,14 @@ struct ContentView: View {
                 }
                 
                 VStack {
-                    Text("\(randomizeNumber(for: selectedFace))")
+                    
+                    if isPressed {
+                        Text("\(randomizeNumber(for: selectedFace))")
+                    }
+                    
+                    Button("Play") {
+                        isPressed = true
+                    }
                 }
                 
                 HStack {
