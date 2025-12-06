@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var numbers = Numbers()
+    @State private var numbersList = Numbers()
     let faces = [4, 6, 8, 10, 20, 100]
     @State private var selectedFace = 4
     @State private var isPressed = false
+    @State private var randomNumber = 0
     var body: some View {
         NavigationStack {
             ZStack {
@@ -28,19 +29,38 @@ struct ContentView: View {
                 VStack {
                     
                     if isPressed {
-                        Text("\(randomizeNumber(for: selectedFace))")
+                        Text("\(randomNumber)")
+                            .font(.title)
+                            .padding()
                     }
                     
                     Button("Play") {
                         isPressed = true
+                        randomNumber = randomizeNumber(for: selectedFace)
+                        let chosenNumber = Number(id: UUID(), number: randomNumber)
+                        numbersList.numbers.append(chosenNumber)
                     }
+                    .padding(.top)
+                    
+                    Button("Clean") {
+                        isPressed = false
+                    }
+                    .disabled(isPressed == false)
+                    
                 }
                 
-                HStack {
-                    ForEach($numbers.numbers) { $i in
-                        Text("\(i.number)")
+                VStack {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach($numbersList.numbers) { $i in
+                                Text("\(i.number)")
+                                    .font(.title2)
+                            }
+                        }
                     }
                 }
+                .padding(.top, 250)
+                .padding()
             }
         }
     }
