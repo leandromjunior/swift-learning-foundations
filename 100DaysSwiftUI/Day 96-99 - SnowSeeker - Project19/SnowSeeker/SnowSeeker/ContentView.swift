@@ -228,10 +228,17 @@ struct MainPlayerView2: View {
     }
 }
 
+enum sortOption {
+    case name
+    case country
+    case standard
+}
+
 struct ContentView: View {
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     @State private var searchText = ""
     @State private var favorites = Favorites()
+    @State private var sortOption: sortOption = .standard
     
     var filteredResorts: [Resort] {
         if searchText.isEmpty {
@@ -240,9 +247,21 @@ struct ContentView: View {
             resorts.filter { $0.name.localizedStandardContains(searchText) }
         }
     }
+    
+    var sortedItems: [Resort] {
+        switch sortOption {
+        case .name:
+            return filteredResorts.sorted { $0.name < $1.name }
+        case .country:
+            return filteredResorts.sorted { $0.country < $1.country }
+        case .standard:
+            return filteredResorts
+        }
+    }
+    
     var body: some View {
         NavigationSplitView {
-            List(filteredResorts) { resort in
+            List(sortedItems) { resort in
                 NavigationLink(value: resort) {
                     HStack {
                         Image(resort.country)
@@ -273,6 +292,37 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Resorts")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button {
+                            withAnimation {
+                                sortOption = .standard
+                            }
+                        } label: {
+                            Label("Standard", systemImage: sortOption == .standard ? "checkmark" : "")
+                        }
+                        
+                        Button {
+                            withAnimation {
+                                sortOption = .name
+                            }
+                        } label: {
+                            Label("Name", systemImage: sortOption == .name ? "checkmark" : "")
+                        }
+                        
+                        Button {
+                            withAnimation {
+                                sortOption = .country
+                            }
+                        } label: {
+                            Label("Country", systemImage: sortOption == .country ? "checkmark" : "")
+                        }
+                    } label: {
+                        Image(systemName: "arrow.up.arrow.down")
+                    }
+                }
+            }
             .navigationDestination(for: Resort.self) { resort in
                 ResortView(resort: resort)
             }
