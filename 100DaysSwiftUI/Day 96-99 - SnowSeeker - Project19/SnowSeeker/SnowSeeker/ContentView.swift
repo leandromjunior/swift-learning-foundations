@@ -228,7 +228,7 @@ struct MainPlayerView2: View {
     }
 }
 
-enum sortOption {
+enum SortOption {
     case name
     case country
     case standard
@@ -238,7 +238,7 @@ struct ContentView: View {
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     @State private var searchText = ""
     @State private var favorites = Favorites()
-    @State private var sortOption: sortOption = .standard
+    @State private var sortedOption: SortOption = .standard
     
     var filteredResorts: [Resort] {
         if searchText.isEmpty {
@@ -249,7 +249,7 @@ struct ContentView: View {
     }
     
     var sortedItems: [Resort] {
-        switch sortOption {
+        switch sortedOption {
         case .name:
             return filteredResorts.sorted { $0.name < $1.name }
         case .country:
@@ -297,26 +297,26 @@ struct ContentView: View {
                     Menu {
                         Button {
                             withAnimation {
-                                sortOption = .standard
+                                sortedOption = .standard
                             }
                         } label: {
-                            Label("Standard", systemImage: sortOption == .standard ? "checkmark" : "")
+                            Label("Standard", systemImage: sortedOption == .standard ? "checkmark" : "")
                         }
                         
                         Button {
                             withAnimation {
-                                sortOption = .name
+                                sortedOption = .name
                             }
                         } label: {
-                            Label("Name", systemImage: sortOption == .name ? "checkmark" : "")
+                            Label("Name", systemImage: sortedOption == .name ? "checkmark" : "")
                         }
                         
                         Button {
                             withAnimation {
-                                sortOption = .country
+                                sortedOption = .country
                             }
                         } label: {
-                            Label("Country", systemImage: sortOption == .country ? "checkmark" : "")
+                            Label("Country", systemImage: sortedOption == .country ? "checkmark" : "")
                         }
                     } label: {
                         Image(systemName: "arrow.up.arrow.down")
